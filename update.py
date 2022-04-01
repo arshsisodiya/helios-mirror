@@ -55,4 +55,3 @@ srun([f"git init -q \
         && git remote add origin {UPSTREAM_REPO} \
         && git fetch origin -q \
         && git reset --hard origin/{UPSTREAM_BRANCH} -q"], shell=True)
-

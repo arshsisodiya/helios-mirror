@@ -1,4 +1,4 @@
-config.env
+*config.env
 *auth_token.txt
 *.pyc
 data*
@@ -14,3 +14,4 @@ accounts/*
 Thumbnails/*
 drive_folder
 cookies.txt
+

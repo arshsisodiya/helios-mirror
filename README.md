@@ -65,10 +65,12 @@ cp config_sample.env config.env
 _____REMOVE_THIS_LINE_____=True
 ```
 Fill up rest of the fields. Meaning of each field is discussed below:
-**0. Unique vars thats not in anast's repo**
+
+**0. Special Vars for features added by Arsh **
+
 - `AUTO_DELETE_UPLOAD_MESSAGE_DURATION `: Interval of time (in seconds), after which the bot deletes it's message and source message which is expected to be viewed instantly. **NOTE**: Set to `-1` to disable auto message deletion.
 - `MOD_USERS` - The Telegram User ID (not username) of users you want to promote as Moderator in your group, separate by space
-- `LEECH_LOG` - Chat id of channel/group where leeched files will be uploaded, NOTE: only put 1 channel/group id, if you leave this empty bot will not send leeched files anywhere
+- `LEECH_LOG` - Chat id of channel/group where leeched files will be uploaded, **NOTE:** only put 1 channel/group id, if you leave this empty bot will not send leeched files anywhere.
 - `LEECH_LOG_ALT` - Chat id of channels/groups where you want to forward leeched files, separate by space
 - `MIRROR_LOGS` - Chat id of channels/groups where you want to store Mirror logs
 - `LINK_LOGS` - Chat id of channels/groups where you want to store mirrored/leeched source links
@@ -82,7 +84,7 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `APPDRIVE_PASS` - Your Appdrive account password
 - `MIN_LIMIT` - Set minimum file size, files below given size will not be downloaded
 - `LEECH_ENABLED ` - Set it True if you want to use leech features
-- ** You can Change commands from config.env**
+
 **1. Required Fields**
 
 - `BOT_TOKEN`: The Telegram Bot Token that you got from [@BotFather](https://t.me/BotFather)

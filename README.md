@@ -76,7 +76,7 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `LINK_LOGS` - Chat id of channels/groups where you want to store mirrored/leeched source links
 - `BOT_PM` - set it true if you want to send mirror links and leeched files in user's PM
 - `FSUB` - set it true if you want to enable Force Subscriber module
-- `FSUB_CHANNEL_ID` - chat id of channel you want users to subscribe
+- `FSUB_CHANNEL_ID` - chat id of channel you want users to subscribe **NOTE:** if you don't wanna use fsub remove this var entirely from your configs.
 - `CHANNEL_USERNAME` - username of channel you want users to subscribe
 - `IMAGE_LEECH` - set it true if you want to enable to leeech images, by default its False to prevent users from leeching thousands of images
 - `MEGAREST` - set it True if you want to use Megasdkrest

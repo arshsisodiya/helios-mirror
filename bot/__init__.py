@@ -595,7 +595,7 @@ except KeyError:
 try:
     FSUB_CHANNEL_ID = int(getConfig('FSUB_CHANNEL_ID'))
 except KeyError:
-    FSUB_CHANNEL_ID = None
+    FSUB_CHANNEL_ID = ""
 
 try:
     CHANNEL_USERNAME: str = getConfig('CHANNEL_USERNAME').replace("@", "")

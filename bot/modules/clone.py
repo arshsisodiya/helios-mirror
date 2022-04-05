@@ -132,7 +132,11 @@ def cloneNode(update, context):
         if button in ["cancelled", ""]:
             sendMessage(f"{tag} {result}", context.bot, update)
         else:
-            sendMarkup(result + cc, context.bot, update, button)
+            if AUTO_DELETE_UPLOAD_MESSAGE_DURATION != -1:
+                auto_delete_message = int(AUTO_DELETE_UPLOAD_MESSAGE_DURATION / 60)
+                warnmsg = f'\n\n<b>This message will be deleted in <i>{auto_delete_message} minutes</i> from this group.</b>'
+        uploadmsg = sendMarkup(result + cc + warnmsg, context.bot, update, button)
+        Thread(target=auto_delete_upload_message, args=(bot, update.message, uploadmsg)).start()
         if is_gdtot:
             gd.deletefile(link)
         elif is_appdrive:

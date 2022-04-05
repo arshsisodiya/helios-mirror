@@ -157,7 +157,7 @@ def add_mega_download(mega_link: str, path: str, listener):
         LOGGER.info('Checking File/Folder if already in Drive')
         mname = node.getName()
         if listener.isZip:
-            mname = mname + ".zip"
+            mname = f'{mname}.zip'
         elif listener.extract:
             try:
                 mname = get_base_name(mname)

@@ -176,8 +176,6 @@ try:
         MIRROR_LOGS.add(int(chats))
 except:
     logging.warning('Logs Chat Details not provided!')
-    pass
-
 if ospath.exists("link_logs.txt"):
     with open("link_logs.txt", "r+") as f:
         lines = f.readlines()
@@ -191,8 +189,6 @@ try:
         LINK_LOGS.add(int(chats))
 except:
     logging.warning('LINK_LOGS Chat id not provided, Proceeding Without it')
-    pass
-
 if ospath.exists("logs_chat.txt"):
     with open("logs_chat.txt", "r+") as f:
         lines = f.readlines()
@@ -213,8 +209,6 @@ try:
         LEECH_LOG.add(int(chats))
 except:
     logging.warning('Leech Log Channel ID not Provided!')
-    pass
-
 try:
     achats = getConfig("LEECH_LOG_ALT")
     achats = achats.split(" ")
@@ -222,13 +216,12 @@ try:
         LEECH_LOG_ALT.add(int(chats))
 except:
     logging.warning('Leech Log alt Channel ID not Provided!')
-    pass
 try:
     BOT_TOKEN = getConfig('BOT_TOKEN')
     parent_id = getConfig('GDRIVE_FOLDER_ID')
     DOWNLOAD_DIR = getConfig('DOWNLOAD_DIR')
     if not DOWNLOAD_DIR.endswith("/"):
-        DOWNLOAD_DIR = DOWNLOAD_DIR + '/'
+        DOWNLOAD_DIR = f'{DOWNLOAD_DIR}/'
     DOWNLOAD_STATUS_UPDATE_INTERVAL = int(getConfig('DOWNLOAD_STATUS_UPDATE_INTERVAL'))
     OWNER_ID = int(getConfig('OWNER_ID'))
     AUTO_DELETE_MESSAGE_DURATION = int(getConfig('AUTO_DELETE_MESSAGE_DURATION'))
@@ -267,7 +260,6 @@ def aria2c_init():
             aria2.remove([download], force=True, files=True)
     except Exception as e:
         logging.error(f"Aria2c initializing error: {e}")
-        pass
 
 if not ospath.isfile(".restartmsg"):
     sleep(1)
@@ -306,7 +298,7 @@ try:
 except KeyError:
     MEGA_API_KEY = None
     LOGGER.info("MEGA API KEY NOT AVAILABLE")
-if MEGAREST is True:
+if MEGAREST:
     # Start megasdkrest binary
     Popen(["megasdkrest", "--apikey", MEGA_API_KEY])
     sleep(3)  # Wait for the mega server to start listening
@@ -583,7 +575,7 @@ try:
     FSUB = FSUB.lower() == 'true'
 except KeyError:
     FSUB = False
-    
+
 try:
     FSUB_CHANNEL_ID = int(getConfig('FSUB_CHANNEL_ID'))
 except KeyError:
@@ -591,7 +583,7 @@ except KeyError:
 
 try:
     CHANNEL_USERNAME: str = getConfig('CHANNEL_USERNAME').replace("@", "")
-    if len(CHANNEL_USERNAME) == 0:
+    if not CHANNEL_USERNAME:
         CHANNEL_USERNAME = 'heliosmirror'
 except KeyError:
     logging.warning('CHANNEL_USERNAME not provided')
@@ -622,20 +614,19 @@ try:
     ACCOUNTS_ZIP_URL = getConfig('ACCOUNTS_ZIP_URL')
     if len(ACCOUNTS_ZIP_URL) == 0:
         raise KeyError
-    else:
-        try:
-            res = rget(ACCOUNTS_ZIP_URL)
-            if res.status_code == 200:
-                with open('accounts.zip', 'wb+') as f:
-                    f.write(res.content)
-            else:
-                logging.error(f"Failed to download accounts.zip, link got HTTP response: {res.status_code}")
-        except Exception as e:
-            logging.error(f"ACCOUNTS_ZIP_URL: {e}")
-            raise KeyError
-        srun(["unzip", "-q", "-o", "accounts.zip"])
-        srun(["chmod", "-R", "777", "accounts"])
-        osremove("accounts.zip")
+    try:
+        res = rget(ACCOUNTS_ZIP_URL)
+        if res.status_code == 200:
+            with open('accounts.zip', 'wb+') as f:
+                f.write(res.content)
+        else:
+            logging.error(f"Failed to download accounts.zip, link got HTTP response: {res.status_code}")
+    except Exception as e:
+        logging.error(f"ACCOUNTS_ZIP_URL: {e}")
+        raise KeyError
+    srun(["unzip", "-q", "-o", "accounts.zip"])
+    srun(["chmod", "-R", "777", "accounts"])
+    osremove("accounts.zip")
 except KeyError:
     pass
 try:

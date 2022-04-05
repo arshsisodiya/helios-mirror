@@ -1,7 +1,7 @@
 import random
 import string
 
-from bot import download_dict, download_dict_lock, ZIP_UNZIP_LIMIT, LOGGER, STOP_DUPLICATE, MIN_LIMIT
+from bot import download_dict, download_dict_lock, ZIP_UNZIP_LIMIT, LOGGER, STOP_DUPLICATE
 from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
 from bot.helper.mirror_utils.status_utils.gd_download_status import GdDownloadStatus
 from bot.helper.telegram_helper.message_utils import sendMessage, sendStatusMessage, sendMarkup
@@ -31,11 +31,6 @@ def add_gd_download(link, listener, is_gdtot):
         LOGGER.info('Checking File/Folder Size...')
         if size > ZIP_UNZIP_LIMIT * 1024**3:
             msg = f'Failed, Zip/Unzip limit is {ZIP_UNZIP_LIMIT}GB.\nYour File/Folder size is {get_readable_file_size(size)}.'
-            return sendMessage(msg, listener.bot, listener.update)
-    if MIN_LIMIT is not None:
-        LOGGER.info('Checking Minimum File/Folder Size...')
-        if size <= MIN_LIMIT * 1024**2:
-            msg = f'Failed, Minimum File Size Limit is  {MIN_LIMIT}MB.\nYour File/Folder size is {get_readable_file_size(size)}.'
             return sendMessage(msg, listener.bot, listener.update)
     LOGGER.info(f"Download Name: {name}")
     drive = GoogleDriveHelper(name, listener)

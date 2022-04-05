@@ -1,7 +1,7 @@
 from time import sleep
 from threading import Thread
 
-from bot import aria2, download_dict_lock, download_dict, STOP_DUPLICATE, TORRENT_DIRECT_LIMIT, ZIP_UNZIP_LIMIT, LOGGER, MIN_LIMIT
+from bot import aria2, download_dict_lock, download_dict, STOP_DUPLICATE, TORRENT_DIRECT_LIMIT, ZIP_UNZIP_LIMIT, LOGGER
 from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
 from bot.helper.ext_utils.bot_utils import is_magnet, getDownloadByGid, new_thread, get_readable_file_size
 from bot.helper.mirror_utils.status_utils.aria_download_status import AriaDownloadStatus
@@ -11,14 +11,8 @@ from bot.helper.ext_utils.fs_utils import get_base_name
 
 @new_thread
 def __onDownloadStarted(api, gid):
-    size = api.get_download(gid).total_length
-    dl = getDownloadByGid(gid)
     try:
-        if size <= MIN_LIMIT * 1024**2:
-            LOGGER.info('Checking Minimum File/Folder Size...')
-            pass
-            dl.getListener().onDownloadError(f'\nFile size less than {MIN_LIMIT}MB is Blocked.\nYour File/Folder size is{size}')
-        elif STOP_DUPLICATE or TORRENT_DIRECT_LIMIT is not None or ZIP_UNZIP_LIMIT is not None:
+        if STOP_DUPLICATE or TORRENT_DIRECT_LIMIT is not None or ZIP_UNZIP_LIMIT is not None:
             sleep(1.5)
             dl = getDownloadByGid(gid)
             download = api.get_download(gid)

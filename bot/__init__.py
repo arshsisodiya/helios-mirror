@@ -396,14 +396,6 @@ try:
 except KeyError:
     ZIP_UNZIP_LIMIT = None
 try:
-    MIN_LIMIT = getConfig('MIN_LIMIT')
-    if len(MIN_LIMIT) == 0:
-        raise KeyError
-    else:
-        MIN_LIMIT = float(MIN_LIMIT)
-except KeyError:
-    MIN_LIMIT = None
-try:
     RSS_CHAT_ID = getConfig('RSS_CHAT_ID')
     if len(RSS_CHAT_ID) == 0:
         raise KeyError

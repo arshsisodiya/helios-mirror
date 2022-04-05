@@ -16,37 +16,37 @@ def __onDownloadStarted(api, gid):
             sleep(1.5)
             dl = getDownloadByGid(gid)
             download = api.get_download(gid)
-            if STOP_DUPLICATE and dl is not None and not dl.getListener().isLeech:
-                LOGGER.info('Checking File/Folder if already in Drive...')
-                sname = download.name
-                if dl.getListener().isZip:
-                    sname = sname + ".zip"
-                elif dl.getListener().extract:
-                    try:
-                        sname = get_base_name(sname)
-                    except:
-                        sname = None
-                if sname is not None:
-                    smsg, button = GoogleDriveHelper().drive_list(sname, True)
-                    if smsg:
-                        dl.getListener().onDownloadError('File/Folder already available in Drive.\n\n')
-                        api.remove([download], force=True, files=True)
-                        return sendMarkup("Here are the search results:", dl.getListener().bot, dl.getListener().update, button)
-            if dl is not None and (ZIP_UNZIP_LIMIT is not None or TORRENT_DIRECT_LIMIT is not None):
-                sleep(1)
-                limit = None
-                if ZIP_UNZIP_LIMIT is not None and (dl.getListener().isZip or dl.getListener().extract):
-                    mssg = f'Zip/Unzip limit is {ZIP_UNZIP_LIMIT}GB'
-                    limit = ZIP_UNZIP_LIMIT
-                elif TORRENT_DIRECT_LIMIT is not None:
-                    mssg = f'Torrent/Direct limit is {TORRENT_DIRECT_LIMIT}GB'
-                    limit = TORRENT_DIRECT_LIMIT
-                if limit is not None:
-                    LOGGER.info('Checking File/Folder Size...')
-                    size = api.get_download(gid).total_length
-                    if size > limit * 1024**3:
-                        dl.getListener().onDownloadError(f'{mssg}.\nYour File/Folder size is {get_readable_file_size(size)}')
-                        return api.remove([download], force=True, files=True)
+        if STOP_DUPLICATE and dl is not None and not dl.getListener().isLeech:
+            LOGGER.info('Checking File/Folder if already in Drive...')
+            sname = download.name
+            if dl.getListener().isZip:
+                sname = f'{sname}.zip'
+            elif dl.getListener().extract:
+                try:
+                    sname = get_base_name(sname)
+                except:
+                    sname = None
+            if sname is not None:
+                smsg, button = GoogleDriveHelper().drive_list(sname, True)
+                if smsg:
+                    dl.getListener().onDownloadError('File/Folder already available in Drive.\n\n')
+                    api.remove([download], force=True, files=True)
+                    return sendMarkup("Here are the search results:", dl.getListener().bot, dl.getListener().update, button)
+        if dl is not None and (ZIP_UNZIP_LIMIT is not None or TORRENT_DIRECT_LIMIT is not None):
+            sleep(1)
+            limit = None
+            if ZIP_UNZIP_LIMIT is not None and (dl.getListener().isZip or dl.getListener().extract):
+                mssg = f'Zip/Unzip limit is {ZIP_UNZIP_LIMIT}GB'
+                limit = ZIP_UNZIP_LIMIT
+            elif TORRENT_DIRECT_LIMIT is not None:
+                mssg = f'Torrent/Direct limit is {TORRENT_DIRECT_LIMIT}GB'
+                limit = TORRENT_DIRECT_LIMIT
+            if limit is not None:
+                LOGGER.info('Checking File/Folder Size...')
+                size = api.get_download(gid).total_length
+                if size > limit * 1024**3:
+                    dl.getListener().onDownloadError(f'{mssg}.\nYour File/Folder size is {get_readable_file_size(size)}')
+                    return api.remove([download], force=True, files=True)
 
     except:
         LOGGER.error(f"onDownloadStart: {gid} stop duplicate and size check didn't pass")
@@ -70,8 +70,7 @@ def __onDownloadComplete(api, gid):
 @new_thread
 def __onDownloadStopped(api, gid):
     sleep(4)
-    dl = getDownloadByGid(gid)
-    if dl:
+    if dl := getDownloadByGid(gid):
         dl.getListener().onDownloadError('Dead torrent!')
 
 @new_thread

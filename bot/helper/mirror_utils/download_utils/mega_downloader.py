@@ -5,7 +5,7 @@ from os import makedirs
 from threading import Event
 from mega import (MegaApi, MegaListener, MegaRequest, MegaTransfer, MegaError)
 
-from bot import LOGGER, MEGA_API_KEY, download_dict_lock, download_dict, MEGA_EMAIL_ID, MEGA_PASSWORD, MEGA_LIMIT, STOP_DUPLICATE, ZIP_UNZIP_LIMIT, MIN_LIMIT
+from bot import LOGGER, MEGA_API_KEY, download_dict_lock, download_dict, MEGA_EMAIL_ID, MEGA_PASSWORD, MEGA_LIMIT, STOP_DUPLICATE, ZIP_UNZIP_LIMIT
 from bot.helper.telegram_helper.message_utils import sendMessage, sendMarkup, sendStatusMessage
 from bot.helper.ext_utils.bot_utils import get_mega_link_type, get_readable_file_size
 from bot.helper.mirror_utils.status_utils.mega_download_status import MegaDownloadStatus
@@ -180,12 +180,6 @@ def add_mega_download(mega_link: str, path: str, listener):
         size = api.getSize(node)
         if size > limit * 1024**3:
             return sendMessage(msg3, listener.bot, listener.update)
-    if MIN_LIMIT is not None:
-        LOGGER.info('Checking File/Folder Minimum Size...')
-        size = api.getSize(node)
-        msg4 = f'Failed, Minimum File Size limit is {MIN_LIMIT}MB.\nYour File/Folder size is {get_readable_file_size(api.getSize(node))}.'
-        if size <= MIN_LIMIT * 1024**2:
-            return sendMessage(msg4, listener.bot, listener.update)
     with download_dict_lock:
         download_dict[listener.uid] = MegaDownloadStatus(mega_listener, listener)
     makedirs(path)

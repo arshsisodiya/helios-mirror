@@ -5,7 +5,7 @@ from time import sleep
 from re import split as resplit
 
 from bot import DOWNLOAD_DIR, dispatcher, LOGGER, BOT_PM, CHANNEL_USERNAME, LEECH_ENABLED
-from bot.helper.telegram_helper.message_utils import sendMessage, sendMarkup, editMessage, bot, auto_delete_message
+from bot.helper.telegram_helper.message_utils import sendMessage, sendMarkup, editMessage, bot, auto_delete_message, auto_delete_upload_message
 from bot.helper.telegram_helper import button_build
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, is_url
 from bot.helper.mirror_utils.download_utils.youtube_dl_download_helper import YoutubeDLHelper
@@ -90,7 +90,9 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None, tag=None):
         result = ydl.extractMetaData(link, name, True)
     except Exception as e:
         msg = str(e).replace('<', ' ').replace('>', ' ')
-        return sendMessage(tag + " " + msg, bot, update)
+        message =  sendMessage(tag + " " + msg, bot, update)
+        Thread(target=auto_delete_message, args=(bot, update.message, message)).start()
+        return
     if 'entries' in result:
         for i in ['144', '240', '360', '480', '720', '1080', '1440', '2160']:
             video_format = f"bv*[height<={i}][ext=mp4]"

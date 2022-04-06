@@ -243,12 +243,18 @@ class MirrorListener:
             if reply_to is not None:
                 reply_to.delete()
             auto_delete_message = int(AUTO_DELETE_UPLOAD_MESSAGE_DURATION / 60)
-            warnmsg = f'\n<b>This message will be deleted in <i>{auto_delete_message} minutes</i> from this group.</b>\n'
+            if self.message.chat.type == 'private':
+                warnmsg = ''
+            else:
+                warnmsg = f'\n<b>This message will be deleted in <i>{auto_delete_message} minutes</i> from this group.</b>\n'
         else:
             warnmsg = ''
-        if BOT_PM:
+        if BOT_PM and self.message.chat.type != 'private':
             pmwarn = f"\n<b>I have sent files in PM.</b>\n"
             pmwarn_mirror = f"\n<b>I have sent links in PM.</b>\n"
+        elif self.message.chat.type == 'private':
+            pmwarn = ''
+            pmwarn_mirror = ''
         else:
             pmwarn = ''
             pmwarn_mirror = ''

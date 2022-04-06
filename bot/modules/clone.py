@@ -134,8 +134,17 @@ def cloneNode(update, context):
         else:
             if AUTO_DELETE_UPLOAD_MESSAGE_DURATION != -1:
                 auto_delete_message = int(AUTO_DELETE_UPLOAD_MESSAGE_DURATION / 60)
-                warnmsg = f'\n\n<b>This message will be deleted in <i>{auto_delete_message} minutes</i> from this group.</b>'
-        uploadmsg = sendMarkup(result + cc + warnmsg, context.bot, update, button)
+                if update.message.chat.type == 'private':
+                    warnmsg = ''
+                else:
+                    warnmsg = f'\n<b>This message will be deleted in <i>{auto_delete_message} minutes</i> from this group.</b>\n'
+        if BOT_PM and update.message.chat.type != 'private':
+            pmwarn = f"\n<b>I have sent links in PM.</b>\n"
+        elif update.message.chat.type == 'private':
+            pmwarn = ''
+        else:
+            pmwarn = ''
+        uploadmsg = sendMarkup(result + cc + pmwarn + warnmsg, context.bot, update, button)
         Thread(target=auto_delete_upload_message, args=(bot, update.message, uploadmsg)).start()
         if is_gdtot:
             gd.deletefile(link)

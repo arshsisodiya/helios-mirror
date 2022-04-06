@@ -6,7 +6,7 @@ from telegram.error import RetryAfter
 from pyrogram.errors import FloodWait
 
 from bot import AUTO_DELETE_MESSAGE_DURATION, AUTO_DELETE_UPLOAD_MESSAGE_DURATION, LOGGER, status_reply_dict, status_reply_dict_lock, \
-                Interval, DOWNLOAD_STATUS_UPDATE_INTERVAL, RSS_CHAT_ID, rss_session, bot
+                Interval, DOWNLOAD_STATUS_UPDATE_INTERVAL, RSS_CHAT_ID, rss_session, bot, OWNER_ID
 from bot.helper.ext_utils.bot_utils import get_readable_message, setInterval
 
 
@@ -86,7 +86,9 @@ def sendLogFile(bot, update: Update):
                           chat_id=update.message.chat_id)
 
 def auto_delete_message(bot, cmd_message: Message, bot_message: Message):
-    if AUTO_DELETE_MESSAGE_DURATION != -1:
+    if cmd_message.chat.type == 'private':
+        pass
+    elif AUTO_DELETE_MESSAGE_DURATION != -1:
         sleep(AUTO_DELETE_MESSAGE_DURATION)
         try:
             # Skip if None is passed meaning we don't want to delete bot xor cmd message
@@ -95,7 +97,9 @@ def auto_delete_message(bot, cmd_message: Message, bot_message: Message):
         except AttributeError:
             pass
 def auto_delete_upload_message(bot, cmd_message: Message, bot_message: Message):
-    if AUTO_DELETE_UPLOAD_MESSAGE_DURATION != -1:
+    if cmd_message.chat.type == 'private':
+        pass
+    elif AUTO_DELETE_UPLOAD_MESSAGE_DURATION != -1:
         sleep(AUTO_DELETE_UPLOAD_MESSAGE_DURATION)
         try:
             # Skip if None is passed meaning we don't want to delete bot xor cmd message

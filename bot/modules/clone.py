@@ -158,7 +158,7 @@ def cloneNode(update, context):
                     bot.sendMessage(chat_id=i, text=result + cc, reply_markup=button, parse_mode=ParseMode.HTML)
             except Exception as e:
                 LOGGER.warning(e)
-            if BOT_PM:
+            if BOT_PM and update.message.chat.type != 'private':
                 try:
                     bot.sendMessage(update.message.from_user.id, text=result, reply_markup=button, parse_mode=ParseMode.HTML)
                 except Exception as e:

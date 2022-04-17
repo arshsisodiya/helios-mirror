@@ -157,6 +157,8 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None, tag=None):
         bmsg = sendMarkup('Choose Video Quality:', bot, update, YTBUTTONS)
 
     Thread(target=_auto_cancel, args=(bmsg, msg_id)).start()
+    Thread(target=auto_delete_message, args=(bot, update.message, bmsg)).start()
+
 
 def _qual_subbuttons(task_id, qual, msg):
     buttons = button_build.ButtonMaker()

@@ -410,6 +410,7 @@ class MirrorListener:
 
 def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False, pswd=None):
     uname = f'<a href="tg://user?id={update.message.from_user.id}">{update.message.from_user.first_name}</a>'
+    length_of_leechlog = len(LEECH_LOG)
     if FSUB:
         try:
             user = bot.get_chat_member(f"{FSUB_CHANNEL_ID}", update.message.from_user.id)
@@ -424,6 +425,16 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
                 Thread(target=auto_delete_upload_message, args=(bot, update.message, message)).start()
                 return
         except:
+            pass
+    if isLeech and length_of_leechlog == 0:
+        try:
+            text = "Error: Leech Functionality will not work\nReason: Your Leech Log var is empty.\n\nRead the README file it's there for a reason."
+            msg = sendMessage(text, bot, update)
+            LOGGER.error("Leech Log var is Empty\nKindly add Chat id in Leech log to use Leech Functionality\nRead the README file it's there for a reason\n")
+            Thread(target=auto_delete_message, args=(bot, update.message, msg)).start()
+            return
+        except Exception as err:
+            LOGGER.error(f"Uff We got Some Error:\n{err}")
             pass
     if BOT_PM:
         try:

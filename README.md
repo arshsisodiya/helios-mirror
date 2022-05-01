@@ -1,6 +1,6 @@
 This is a Telegram Bot written in Python for mirroring files on the Internet to your Google Drive or Telegram.
-### Fork of [Anasty's Repo](https://github.com/anasty17/mirror-leech-telegram-bot)
-# Extra Features implemented by Arsh :
+
+# Features implemented by Arsh :
 - Leech Log
 - Mirror logs
 - Source link logs
@@ -68,7 +68,7 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 
 **0. Special Vars for features added by Arsh **
 
-- `AUTO_DELETE_UPLOAD_MESSAGE_DURATION `: Interval of time (in seconds), after which the bot deletes it's message and source message which is expected to be viewed instantly. **NOTE**: Set to `-1` to disable auto message deletion.
+- `AUTO_DELETE_UPLOAD_MESSAGE_DURATION `: Interval of time (in seconds), after which the bot deletes it's message and source message which is expected to be viewed instantly. **NOTE**: Set to `-1` to disable auto message deletion.  **NOTE:** - This is Required var if you don't add this your bot will crash
 - `MOD_USERS` - The Telegram User ID (not username) of users you want to promote as Moderator in your group, separate by space
 - `LEECH_LOG` - Chat id of channel/group where leeched files will be uploaded, **NOTE:** only put 1 channel/group id, if you leave this empty bot will not send leeched files anywhere.
 - `LEECH_LOG_ALT` - Chat id of channels/groups where you want to forward leeched files, separate by space
@@ -84,6 +84,8 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `APPDRIVE_PASS` - Your Appdrive account password
 - `MIN_LIMIT` - Set minimum file size, files below given size will not be downloaded
 - `LEECH_ENABLED ` - Set it True if you want to use leech features
+  
+  **NOTE:**  - Chat id of all Logs Channel(s)/Group(s) Should start with -100xxxxxx
 
 **1. Required Fields**
 
@@ -502,3 +504,5 @@ To Clone or Leech gdtot link follow these steps:
 
 P.s - Credit goes to all original developers of python, pyrogram, linux, heroku, mirror bots, leech bots, Mega, megasdkrest, sql database, google drive, telegram, and everything used in this project,
 hopefully now people will not cry for credits.
+  
+  #### Main Credit - [Anasty's Repo](https://github.com/anasty17/mirror-leech-telegram-bot)

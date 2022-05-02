@@ -31,7 +31,8 @@ def cloneNode(update, context):
                 message = sendMarkup(str(f"️<b>Dear {uname}, You haven't join our Updates Channel yet.</b>\n\nKindly Join @{CHANNEL_USERNAME} To Use Bots. "), bot, update, reply_markup)
                 Thread(target=auto_delete_upload_message, args=(bot, update.message, message)).start()
                 return
-        except:
+        except Exception as error:
+            LOGGER.warning(error)
             pass
     if BOT_PM:
         try:

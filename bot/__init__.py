@@ -175,7 +175,7 @@ try:
     for chats in achats:
         MIRROR_LOGS.add(int(chats))
 except:
-    logging.warning('Logs Chat Details not provided!')
+    logging.warning('Mirror Logs Chat Details not provided! Proceeding Without it')
     pass
 
 if ospath.exists("link_logs.txt"):
@@ -212,7 +212,7 @@ try:
     for chats in achats:
         LEECH_LOG.add(int(chats))
 except:
-    logging.warning('Leech Log Channel ID not Provided!')
+    logging.warning('Leech Log Channel ID not Provided! You will not be able to use leech features')
     pass
 
 try:
@@ -221,7 +221,6 @@ try:
     for chats in achats:
         LEECH_LOG_ALT.add(int(chats))
 except:
-    logging.warning('Leech Log alt Channel ID not Provided!')
     pass
 try:
     BOT_TOKEN = getConfig('BOT_TOKEN')
@@ -232,13 +231,16 @@ try:
     DOWNLOAD_STATUS_UPDATE_INTERVAL = int(getConfig('DOWNLOAD_STATUS_UPDATE_INTERVAL'))
     OWNER_ID = int(getConfig('OWNER_ID'))
     AUTO_DELETE_MESSAGE_DURATION = int(getConfig('AUTO_DELETE_MESSAGE_DURATION'))
-    AUTO_DELETE_UPLOAD_MESSAGE_DURATION = int(getConfig('AUTO_DELETE_UPLOAD_MESSAGE_DURATION'))
     TELEGRAM_API = getConfig('TELEGRAM_API')
     TELEGRAM_HASH = getConfig('TELEGRAM_HASH')
 except KeyError as e:
-    LOGGER.error("One or more env variables missing! Exiting now")
+    LOGGER.error("One or more Required env variables missing! Exiting now")
     exit(1)
-
+try:
+    AUTO_DELETE_UPLOAD_MESSAGE_DURATION = int(getConfig('AUTO_DELETE_UPLOAD_MESSAGE_DURATION'))
+except KeyError as e:
+    LOGGER.error("AUTO_DELETE_UPLOAD_MESSAGE_DURATION var missing! Exiting now")
+    exit(1)
 LOGGER.info("Generating BOT_STRING_SESSION")
 app = Client('pyrogram', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, bot_token=BOT_TOKEN, no_updates=True)
 
@@ -586,9 +588,10 @@ except KeyError:
     
 try:
     FSUB_CHANNEL_ID = int(getConfig('FSUB_CHANNEL_ID'))
-except KeyError:
-    FSUB_CHANNEL_ID = ""
-
+except Exception as error:
+    LOGGER.warning(f"FSUB_CHANNEL_ID env is empty:\n{error}")
+    FSUB_CHANNEL_ID = "-1001576780814"
+    pass
 try:
     CHANNEL_USERNAME: str = getConfig('CHANNEL_USERNAME').replace("@", "")
     if len(CHANNEL_USERNAME) == 0:

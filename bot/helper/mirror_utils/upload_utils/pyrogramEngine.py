@@ -118,8 +118,8 @@ class TgUploader:
                         if BOT_PM:
                             try:
                                 app.send_video(chat_id=self.__user_id, video=self.__sent_msg.video.file_id, caption=cap_mono)
-                            except Exception as f:
-                                LOGGER.error(f"Failed To Send Video in PM:\n{f}")
+                            except Exception as err:
+                                LOGGER.error(f"Failed To Send Video in PM:\n{err}")
                         if LEECH_LOG_ALT:
                             try:
                                 for i in self.__leech_log_alt:
@@ -143,13 +143,13 @@ class TgUploader:
                         if BOT_PM:
                             try:
                                 app.send_audio(chat_id=self.__user_id, audio=self.__sent_msg.audio.file_id, caption=cap_mono)
-                            except Exception as f:
-                                LOGGER.error(f"Failed To Send Audio in PM:\n{f}")
+                            except Exception as err:
+                                LOGGER.error(f"Failed To Send Audio in PM:\n{err}")
                         if LEECH_LOG_ALT:
                             try:
                                 for i in self.__leech_log_alt:
                                     app.send_audio(chat_id=i, audio=self.__sent_msg.audio.file_id, caption=cap_mono)
-                            except Exception as f:
+                            except Exception as err:
                                 LOGGER.error(f"Failed to send Audio in Alt Leech Log:\n{err}")
 
                 elif file_.upper().endswith(IMAGE_SUFFIXES):
@@ -166,18 +166,18 @@ class TgUploader:
                                 try:
                                     app.send_photo(chat_id=self.__user_id, photo=self.__sent_msg.photo.file_id,
                                             caption=cap_mono)
-                                except Exception as f:
-                                    LOGGER.error(f"Failed To Send Image in PM:\n{f}")
+                                except Exception as err:
+                                    LOGGER.error(f"Failed To Send Image in PM:\n{err}")
                             if LEECH_LOG_ALT:
                                 try:
                                     app.send_photo(chat_id=i, photo=self.__sent_msg.photo.file_id,
                                             caption=cap_mono)
-                                except Exception as f:
-                                    LOGGER.error(f"Failed To Send Image in Alt Leech Log:\n{f}")
-                        except Exception:
-                            LOGGER.warning("Image Leech is Blocked by Owner")
+                                except Exception as err:
+                                    LOGGER.error(f"Failed To Send Image in Alt Leech Log:\n{err}")
+                        except Exception as err:
+                            LOGGER.warning(f"Image Leech is Blocked by Owner:\n{err}")
                     else:
-                        LOGGER.warning("Image Leech is Blocked by Owner")
+                        LOGGER.warning(f"Image Leech is Blocked by Owner")
                         pass
 
                 elif file_.upper().endswith(TEXT_SUFFIXES):
@@ -204,14 +204,14 @@ class TgUploader:
                     if BOT_PM:
                         try:
                             app.send_document(chat_id=self.__user_id, document=self.__sent_msg.document.file_id, caption=cap_mono)
-                        except Exception as f:
-                            LOGGER.error(f"Failed To Send Document in PM:\n{f}")
+                        except Exception as err:
+                            LOGGER.error(f"Failed To Send Document in PM:\n{err}")
                     if LEECH_LOG_ALT:
                         try:
                             for i in self.__leech_log_alt:
                                 app.send_document(chat_id=i, document=self.__sent_msg.document.file_id, caption=cap_mono)
-                        except Exception as f:
-                            LOGGER.error(f"Failed To Send Document in Alt Leech Log:\n{f}")
+                        except Exception as err:
+                            LOGGER.error(f"Failed To Send Document in Alt Leech Log:\n{err}")
         except FloodWait as f:
             LOGGER.warning(str(f))
             sleep(f.x)

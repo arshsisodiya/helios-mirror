@@ -23,18 +23,14 @@ def cloneNode(update, context):
     if FSUB:
         try:
             uname = f'<a href="tg://user?id={update.message.from_user.id}">{update.message.from_user.first_name}</a>'
-            user = bot.get_chat_member(
-                f"{FSUB_CHANNEL_ID}", update.message.from_user.id)
+            user = bot.get_chat_member(f"{FSUB_CHANNEL_ID}", update.message.from_user.id)
             LOGGER.error(user.status)
             if user.status not in ('member', 'creator', 'administrator'):
                 buttons = ButtonMaker()
-                buttons.buildbutton(
-                    "Click Here To Join Updates Channel", f"https://t.me/{CHANNEL_USERNAME}")
+                buttons.buildbutton("Click Here To Join Updates Channel", f"https://t.me/{CHANNEL_USERNAME}")
                 reply_markup = InlineKeyboardMarkup(buttons.build_menu(1))
-                message = sendMarkup(str(
-                    f"️<b>Dear {uname}, You haven't join our Updates Channel yet.</b>\n\nKindly Join @{CHANNEL_USERNAME} To Use Bots. "), bot, update, reply_markup)
-                Thread(target=auto_delete_upload_message, args=(
-                    bot, update.message, message)).start()
+                message = sendMarkup(str(f"️<b>Dear {uname}, You haven't join our Updates Channel yet.</b>\n\nKindly Join @{CHANNEL_USERNAME} To Use Bots. "), bot, update, reply_markup)
+                Thread(target=auto_delete_upload_message, args=(bot, update.message, message)).start()
                 return
         except Exception as error:
             LOGGER.warning(error)
@@ -52,14 +48,11 @@ def cloneNode(update, context):
             channel = CHANNEL_USERNAME
             botstart = f"http://t.me/{b_uname}"
             keyboard = [
-                [InlineKeyboardButton(
-                    "Click Here to Start Me", url=f"{botstart}")],
+                [InlineKeyboardButton("Click Here to Start Me", url=f"{botstart}")],
                 [InlineKeyboardButton("Join our Updates Channel", url=f"t.me/{channel}")]]
-            message = sendMarkup(
-                f"Dear {uname},\n\n<b>I found that you haven't started me in PM (Private Chat) yet.</b>\n\nFrom now on i will give link and leeched files in PM and log channel only.",
+            message = sendMarkup(f"Dear {uname},\n\n<b>I found that you haven't started me in PM (Private Chat) yet.</b>\n\nFrom now on i will give link and leeched files in PM and log channel only.",
                 bot, update, reply_markup=InlineKeyboardMarkup(keyboard))
-            Thread(target=auto_delete_message, args=(
-                bot, update.message, message)).start()
+            Thread(target=auto_delete_message, args=(bot, update.message, message)).start()
             return
     args = update.message.text.split(" ", maxsplit=1)
     reply_to = update.message.reply_to_message
@@ -69,16 +62,14 @@ def cloneNode(update, context):
         if update.message.from_user.username:
             tag = f"@{update.message.from_user.username}"
         else:
-            tag = update.message.from_user.mention_html(
-                update.message.from_user.first_name)
+            tag = update.message.from_user.mention_html(update.message.from_user.first_name)
     elif reply_to is not None:
         if len(link) == 0:
             link = reply_to.text
         if reply_to.from_user.username:
             tag = f"@{reply_to.from_user.username}"
         else:
-            tag = reply_to.from_user.mention_html(
-                reply_to.from_user.first_name)
+            tag = reply_to.from_user.mention_html(reply_to.from_user.first_name)
     is_gdtot = is_gdtot_link(link)
     is_appdrive = is_appdrive_link(link)
     if is_gdtot:
@@ -91,8 +82,7 @@ def cloneNode(update, context):
             deleteMessage(context.bot, msg)
             return sendMessage(str(e), context.bot, update)
     elif is_appdrive:
-        msg = sendMessage(
-            f"Processing: <code>{link}</code>", context.bot, update)
+        msg = sendMessage(f"Processing: <code>{link}</code>", context.bot, update)
         try:
             apdict = appdrive(link)
             link = apdict.get('gdrive_link')
@@ -117,14 +107,12 @@ def cloneNode(update, context):
                 msg2 = f'Failed, Clone limit is {CLONE_LIMIT}GB.\nYour File/Folder size is {get_readable_file_size(size)}.'
                 return sendMessage(msg2, context.bot, update)
         if files <= 20:
-            msg = sendMessage(
-                f"Cloning: <code>{link}</code>", context.bot, update)
+            msg = sendMessage(f"Cloning: <code>{link}</code>", context.bot, update)
             result, button = gd.clone(link)
             deleteMessage(context.bot, msg)
         else:
             drive = GoogleDriveHelper(name)
-            gid = ''.join(random.SystemRandom().choices(
-                string.ascii_letters + string.digits, k=12))
+            gid = ''.join(random.SystemRandom().choices(string.ascii_letters + string.digits, k=12))
             clone_status = CloneStatus(drive, size, update, gid)
             with download_dict_lock:
                 download_dict[update.message.message_id] = clone_status
@@ -147,8 +135,7 @@ def cloneNode(update, context):
             sendMessage(f"{tag} {result}", context.bot, update)
         else:
             if AUTO_DELETE_UPLOAD_MESSAGE_DURATION != -1:
-                auto_delete_message = int(
-                    AUTO_DELETE_UPLOAD_MESSAGE_DURATION / 60)
+                auto_delete_message = int(AUTO_DELETE_UPLOAD_MESSAGE_DURATION / 60)
                 if update.message.chat.type == 'private':
                     warnmsg = ''
                 else:
@@ -163,10 +150,8 @@ def cloneNode(update, context):
         else:
             pmwarn = ''
             warnmsg = ''
-        uploadmsg = sendMarkup(result + cc + pmwarn +
-                               warnmsg, context.bot, update, button)
-        Thread(target=auto_delete_upload_message, args=(
-            bot, update.message, uploadmsg)).start()
+        uploadmsg = sendMarkup(result + cc + pmwarn + warnmsg, context.bot, update, button)
+        Thread(target=auto_delete_upload_message, args=(bot, update.message, uploadmsg)).start()
         if is_gdtot:
             gd.deletefile(link)
         elif is_appdrive:
@@ -176,24 +161,18 @@ def cloneNode(update, context):
         if MIRROR_LOGS:
             try:
                 for i in MIRROR_LOGS:
-                    bot.sendMessage(chat_id=i, text=result + cc,
-                                    reply_markup=button, parse_mode=ParseMode.HTML)
+                    bot.sendMessage(chat_id=i, text=result + cc, reply_markup=button, parse_mode=ParseMode.HTML)
             except Exception as e:
                 LOGGER.warning(e)
             if BOT_PM and update.message.chat.type != 'private':
                 try:
-                    bot.sendMessage(update.message.from_user.id, text=result,
-                                    reply_markup=button, parse_mode=ParseMode.HTML)
+                    bot.sendMessage(update.message.from_user.id, text=result, reply_markup=button, parse_mode=ParseMode.HTML)
                 except Exception as e:
                     LOGGER.warning(e)
                     return
     else:
-        message = sendMessage('Send Gdrive or gdtot link along with command or by replying to the link by command',
-                              context.bot, update)
-        Thread(target=auto_delete_message, args=(
-            bot, update.message, message)).start()
+        message = sendMessage('Send Gdrive or gdtot link along with command or by replying to the link by command', context.bot, update)
+        Thread(target=auto_delete_message, args=(bot, update.message, message)).start()
 
-
-clone_handler = CommandHandler(BotCommands.CloneCommand, cloneNode,
-                               filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
+clone_handler = CommandHandler(BotCommands.CloneCommand, cloneNode, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 dispatcher.add_handler(clone_handler)

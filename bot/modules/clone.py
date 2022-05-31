@@ -34,7 +34,6 @@ def cloneNode(update, context):
                 return
         except Exception as error:
             LOGGER.warning(error)
-            pass
     if BOT_PM:
         try:
             msg1 = f'Added your Requested link to clone\n'
@@ -133,23 +132,22 @@ def cloneNode(update, context):
         cc = f'\n\n<b>#Cloned By: </b>{tag}'
         if button in ["cancelled", ""]:
             sendMessage(f"{tag} {result}", context.bot, update)
-        else:
-            if AUTO_DELETE_UPLOAD_MESSAGE_DURATION != -1:
-                auto_delete_message = int(AUTO_DELETE_UPLOAD_MESSAGE_DURATION / 60)
-                if update.message.chat.type == 'private':
-                    warnmsg = ''
-                else:
-                    warnmsg = f'\n<b>This message will be deleted in <i>{auto_delete_message} minutes</i> from this group.</b>\n'
+        elif AUTO_DELETE_UPLOAD_MESSAGE_DURATION != -1:
+            auto_delete_message = int(AUTO_DELETE_UPLOAD_MESSAGE_DURATION / 60)
+            warnmsg = (
+                ''
+                if update.message.chat.type == 'private'
+                else f'\n<b>This message will be deleted in <i>{auto_delete_message} minutes</i> from this group.</b>\n'
+            )
+
         if BOT_PM and update.message.chat.type != 'private':
             pmwarn = f"\n<b>I have sent links in PM.</b>\n"
-            warnmsg = ''
-
         elif update.message.chat.type == 'private':
             pmwarn = ''
-            warnmsg = ''
         else:
             pmwarn = ''
-            warnmsg = ''
+        warnmsg = ''
+
         uploadmsg = sendMarkup(result + cc + pmwarn + warnmsg, context.bot, update, button)
         Thread(target=auto_delete_upload_message, args=(bot, update.message, uploadmsg)).start()
         if is_gdtot:

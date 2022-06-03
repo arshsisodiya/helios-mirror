@@ -13,7 +13,6 @@ def speedtest(update, context):
     test.get_best_server()
     test.download()
     test.upload()
-    test.results.share()
     result = test.results.dict()
     string_speed = f'''
 <b>Server</b>

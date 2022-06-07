@@ -1,13 +1,15 @@
 from feedparser import parse as feedparse
 from time import sleep
-from telegram.ext import CommandHandler
-from threading import Lock
+from telegram.ext import CommandHandler, CallbackQueryHandler
+from telegram import InlineKeyboardMarkup
+from threading import Lock, Thread
 
-from bot import dispatcher, job_queue, rss_dict, LOGGER, DB_URI, RSS_DELAY, RSS_CHAT_ID, RSS_COMMAND
-from bot.helper.telegram_helper.message_utils import sendMessage, editMessage, sendRss
+from bot import dispatcher, job_queue, rss_dict, LOGGER, DB_URI, RSS_DELAY, RSS_CHAT_ID, RSS_COMMAND, AUTO_DELETE_MESSAGE_DURATION
+from bot.helper.telegram_helper.message_utils import sendMessage, editMessage, sendMarkup, auto_delete_message, sendRss
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.ext_utils.db_handler import DbManger
+from bot.helper.telegram_helper import button_build
 
 rss_dict_lock = Lock()
 
@@ -16,9 +18,9 @@ def rss_list(update, context):
         list_feed = "<b>Your subscriptions: </b>\n\n"
         for title, url in list(rss_dict.items()):
             list_feed += f"<b>Title:</b> <code>{title}</code>\n<b>Feed Url: </b><code>{url[0]}</code>\n\n"
-        sendMessage(list_feed, context.bot, update)
+        sendMessage(list_feed, context.bot, update.message)
     else:
-        sendMessage("No subscriptions.", context.bot, update)
+        sendMessage("No subscriptions.", context.bot, update.message)
 
 def rss_get(update, context):
     try:
@@ -28,7 +30,7 @@ def rss_get(update, context):
         feed_url = rss_dict.get(title)
         if feed_url is not None and count > 0:
             try:
-                msg = sendMessage(f"Getting the last <b>{count}</b> item(s) from {title}", context.bot, update)
+                msg = sendMessage(f"Getting the last <b>{count}</b> item(s) from {title}", context.bot, update.message)
                 rss_d = feedparse(feed_url[0])
                 item_info = ""
                 for item_num in range(count):
@@ -46,9 +48,9 @@ def rss_get(update, context):
                 LOGGER.error(str(e))
                 editMessage(str(e), msg)
         else:
-            sendMessage("Enter a vaild title/value.", context.bot, update)
+            sendMessage("Enter a vaild title/value.", context.bot, update.message)
     except (IndexError, ValueError):
-        sendMessage(f"Use this format to fetch:\n/{BotCommands.RssGetCommand} Title value", context.bot, update)
+        sendMessage(f"Use this format to fetch:\n/{BotCommands.RssGetCommand} Title value", context.bot, update.message)
 
 def rss_sub(update, context):
     try:
@@ -71,7 +73,7 @@ def rss_sub(update, context):
         exists = rss_dict.get(title)
         if exists is not None:
             LOGGER.error("This title already subscribed! Choose another title!")
-            return sendMessage("This title already subscribed! Choose another title!", context.bot, update)
+            return sendMessage("This title already subscribed! Choose another title!", context.bot, update.message)
         try:
             rss_d = feedparse(feed_link)
             sub_msg = "<b>Subscribed!</b>"
@@ -91,15 +93,15 @@ def rss_sub(update, context):
                 if len(rss_dict) == 0:
                     rss_job.enabled = True
                 rss_dict[title] = [feed_link, last_link, last_title, f_lists]
-            sendMessage(sub_msg, context.bot, update)
+            sendMessage(sub_msg, context.bot, update.message)
             LOGGER.info(f"Rss Feed Added: {title} - {feed_link} - {filters}")
         except (IndexError, AttributeError) as e:
             LOGGER.error(str(e))
             msg = "The link doesn't seem to be a RSS feed or it's region-blocked!"
-            sendMessage(msg, context.bot, update)
+            sendMessage(msg, context.bot, update.message)
         except Exception as e:
             LOGGER.error(str(e))
-            sendMessage(str(e), context.bot, update)
+            sendMessage(str(e), context.bot, update.message)
     except IndexError:
         msg = f"Use this format to add feed url:\n/{BotCommands.RssSubCommand} Title https://www.rss-url.com"
         msg += " f: 1080 or 720 or 144p|mkv or mp4|hevc (optional)\n\nThis filter will parse links that it's titles"
@@ -114,7 +116,7 @@ def rss_sub(update, context):
         msg += "\n\n3. You can add `or` and `|` as much as you want."
         msg += "\n\n4. Take look on title if it has static special character after or before the qualities or extensions"
         msg += " or whatever and use them in filter to avoid wrong match"
-        sendMessage(msg, context.bot, update)
+        sendMessage(msg, context.bot, update.message)
 
 def rss_unsub(update, context):
     try:
@@ -122,27 +124,67 @@ def rss_unsub(update, context):
         title = str(args[1])
         exists = rss_dict.get(title)
         if exists is None:
-            LOGGER.error("Rss link not exists! Nothing removed!")
-            sendMessage("Rss link not exists! Nothing removed!", context.bot, update)
+            msg = "Rss link not exists! Nothing removed!"
+            LOGGER.error(msg)
+            sendMessage(msg, context.bot, update.message)
         else:
             DbManger().rss_delete(title)
             with rss_dict_lock:
                 del rss_dict[title]
-            sendMessage(f"Rss link with Title: {title} removed!", context.bot, update)
-            LOGGER.info(f"Rss link with Title: {title} removed!")
+            sendMessage(f"Rss link with Title: <code>{title}</code> has been removed!", context.bot, update.message)
+            LOGGER.info(f"Rss link with Title: {title} has been removed!")
     except IndexError:
-        sendMessage(f"Use this format to remove feed url:\n/{BotCommands.RssUnSubCommand} Title", context.bot, update)
+        sendMessage(f"Use this format to remove feed url:\n/{BotCommands.RssUnSubCommand} Title", context.bot, update.message)
 
-def rss_unsuball(update, context):
-    if len(rss_dict) > 0:
-        DbManger().rss_delete_all()
-        with rss_dict_lock:
-            rss_dict.clear()
-        rss_job.enabled = False
-        sendMessage("All subscriptions deleted.", context.bot, update)
-        LOGGER.info("All Rss Subscriptions has been removed")
+def rss_settings(update, context):
+    buttons = button_build.ButtonMaker()
+    buttons.sbutton("Unsubscribe All", "rss unsuball")
+    if rss_job.enabled:
+        buttons.sbutton("Pause", "rss pause")
     else:
-        sendMessage("No subscriptions to remove!", context.bot, update)
+        buttons.sbutton("Start", "rss start")
+    if AUTO_DELETE_MESSAGE_DURATION == -1:
+        buttons.sbutton("Close", f"rss close")
+    button = InlineKeyboardMarkup(buttons.build_menu(1))
+    setting = sendMarkup('Rss Settings', context.bot, update.message, button)
+    Thread(target=auto_delete_message, args=(context.bot, update.message, setting)).start()
+
+def rss_set_update(update, context):
+    query = update.callback_query
+    user_id = query.from_user.id
+    msg = query.message
+    data = query.data
+    data = data.split(" ")
+    if not CustomFilters._owner_query(user_id):
+        query.answer(text="You don't have permission to use these buttons!", show_alert=True)
+    elif data[1] == 'unsuball':
+        query.answer()
+        if len(rss_dict) > 0:
+            DbManger().trunc_table('rss')
+            with rss_dict_lock:
+                rss_dict.clear()
+            rss_job.enabled = False
+            editMessage("All Rss Subscriptions have been removed.", msg)
+            LOGGER.info("All Rss Subscriptions have been removed.")
+        else:
+            editMessage("No subscriptions to remove!", msg)
+    elif data[1] == 'pause':
+        query.answer()
+        rss_job.enabled = False
+        editMessage("Rss Paused", msg)
+        LOGGER.info("Rss Paused")
+    elif data[1] == 'start':
+        query.answer()
+        rss_job.enabled = True
+        editMessage("Rss Started", msg)
+        LOGGER.info("Rss Started")
+    else:
+        query.answer()
+        try:
+            query.message.delete()
+            query.message.reply_to_message.delete()
+        except:
+            pass
 
 def rss_monitor(context):
     with rss_dict_lock:
@@ -200,11 +242,14 @@ if DB_URI is not None and RSS_CHAT_ID is not None:
     rss_get_handler = CommandHandler(BotCommands.RssGetCommand, rss_get, filters=CustomFilters.owner_filter | CustomFilters.sudo_user, run_async=True)
     rss_sub_handler = CommandHandler(BotCommands.RssSubCommand, rss_sub, filters=CustomFilters.owner_filter | CustomFilters.sudo_user, run_async=True)
     rss_unsub_handler = CommandHandler(BotCommands.RssUnSubCommand, rss_unsub, filters=CustomFilters.owner_filter | CustomFilters.sudo_user, run_async=True)
-    rss_unsub_all_handler = CommandHandler(BotCommands.RssUnSubAllCommand, rss_unsuball, filters=CustomFilters.owner_filter | CustomFilters.sudo_user, run_async=True)
+    rss_settings_handler = CommandHandler(BotCommands.RssSettingsCommand, rss_settings, filters=CustomFilters.owner_filter | CustomFilters.sudo_user, run_async=True)
+    rss_buttons_handler = CallbackQueryHandler(rss_set_update, pattern="rss", run_async=True)
 
     dispatcher.add_handler(rss_list_handler)
     dispatcher.add_handler(rss_get_handler)
     dispatcher.add_handler(rss_sub_handler)
     dispatcher.add_handler(rss_unsub_handler)
-    dispatcher.add_handler(rss_unsub_all_handler)
+    dispatcher.add_handler(rss_settings_handler)
+    dispatcher.add_handler(rss_buttons_handler)
     rss_job = job_queue.run_repeating(rss_monitor, interval=RSS_DELAY, first=20, name="RSS")
+    rss_job.enabled = True

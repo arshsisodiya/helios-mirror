@@ -1,6 +1,5 @@
 from bot.helper.ext_utils.bot_utils import get_readable_file_size,MirrorStatus, get_readable_time
 from bot import DOWNLOAD_DIR
-from .status import Status
 
 class MegaDownloadStatus:
 

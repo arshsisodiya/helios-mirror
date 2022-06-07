@@ -1,4 +1,4 @@
-FROM arshsisodiya/arshtest:beta
+FROM arshsisodiya/helioskirepo:public
 
 WORKDIR /usr/src/app
 RUN chmod 777 /usr/src/app

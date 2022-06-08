@@ -375,7 +375,7 @@ def _mirror(bot, message, isZip=False, extract=False, isQbit=False, isLeech=Fals
         except Exception as err:
             LOGGER.error(f"Uff We got Some Error:\n{err}")
             pass
-    if BOT_PM:
+    if BOT_PM and message.chat.type != 'private':
         try:
             msg1 = f'Added your Requested link to Download\n'
             send = bot.sendMessage(message.from_user.id, text=msg1)

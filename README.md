@@ -1,17 +1,19 @@
 This is a Telegram Bot written in Python for mirroring files on the Internet to your Google Drive or Telegram. Based on [python-aria-mirror-bot](https://github.com/lzzy12/python-aria-mirror-bot)
 
+## If you Like My work Star the repo and Follow me on Github
+
 # Features:
 ## By [Arsh](https://github.com/arshsisodiya)
 - Mirror logs
 - Source link logs
-- Database Support for leech logs 
+- Database Support for leech logs
 - Sending Leeched files and Mirror links in user's PM
 - Appdrive Support
 - Megasdkrest Client implimentation
 - Change commands directly from config.env
-- And many more little changes can't remember 
+- And many more little changes can't remember
 
-## By [Anas](https://github.com/anasty17)
+## From Other Repositories
 - qBittorrent
 - Select files from Torrent before downloading using qbittorrent
 - Leech (splitting, thumbnail for each user, setting as document or as media for each user)
@@ -42,7 +44,6 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Incomplete task notifier to get incomplete task messages after restart, works with database.
 - Many bugs have been fixed
 
-## From Other Repositories
 - Mirror direct download links, Torrent, and Telegram files to Google Drive
 - Mirror Mega.nz links to Google Drive
 - Copy files from someone's Drive to your Drive (Using Autorclone)
@@ -77,7 +78,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 
 - Clone this repo:
 ```
-git clone https://github.com/anasty17/mirror-leech-telegram-bot mirrorbot/ && cd mirrorbot
+git clone https://github.com/arshsisodiya/helios-mirror mirrorbot/ && cd mirrorbot
 ```
 - For Debian based distros
 ```
@@ -111,13 +112,14 @@ _____REMOVE_THIS_LINE_____=True
 Fill up rest of the fields. Meaning of each field is discussed below:
 **0. Special Vars for features added by Arsh **
 
-- `LEECH_LOG` - Chat id of channel/group where leeched files will be uploaded, **NOTE:** only put 1 channel/group id, if you leave this empty bot will not send leeched files anywhere.
+- `LEECH_LOG` - Chat id of channel/group where leeched files will be uploaded, **NOTE:** only put 1 channel/group id starts with -100xxxxxxxxx, if you leave this empty bot will not send leeched files anywhere.
 - `MIRROR_LOGS` - Chat id of channels/groups where you want to store Mirror logs
-- `BOT_PM` - set it true if you want to send mirror links and leeched files in user's PM
-- `MEGAREST` - set it True if you want to use Megasdkrest
+- `BOT_PM` - set it `True` if you want to send mirror links and leeched files in user's PM, Default is `False`.
+- `MEGAREST` - set it `True` if you want to use Megasdkrest, Default is `False`.
 - `APPDRIVE_EMAIL` - Your Appdrive account email
 - `APPDRIVE_PASS` - Your Appdrive account password
-**1. Required Fields**
+- `SOURCE_LINK` -  set it `True` if you want to get Source Link of Mirrored/Cloned file,  Default is `False`.
+- *1. Required Fields**
 
 - `BOT_TOKEN`: The Telegram Bot Token that you got from [@BotFather](https://t.me/BotFather)
 - `GDRIVE_FOLDER_ID`: This is the Folder/TeamDrive ID of the Google Drive Folder to which you want to upload all the mirrors.
@@ -130,11 +132,11 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `TELEGRAM_HASH`: This is to authenticate your Telegram account for downloading Telegram files. You can get this from https://my.telegram.org.
 
 **2. Optional Fields**
-- `DATABASE_URL`: Your SQL Database URL. Follow this [Generate Database](https://github.com/anasty17/mirror-leech-telegram-bot/tree/master#generate-database) to generate database. Data will be saved in Database: auth and sudo users, leech settings including thumbnails for each user, rss data and incomplete tasks. **NOTE**: If deploying on heroku and using heroku postgresql delete this variable from **config.env** file. **DATABASE_URL** will be grabbed from heroku variables.
+- `DATABASE_URL`: Your SQL Database URL. Follow this [Generate Database](https://github.com/arshsisodiya/helios-mirror/tree/master#generate-database) to generate database. Data will be saved in Database: auth and sudo users, leech settings including thumbnails for each user, rss data and incomplete tasks. **NOTE**: If deploying on heroku and using heroku postgresql delete this variable from **config.env** file. **DATABASE_URL** will be grabbed from heroku variables.
 - `AUTHORIZED_CHATS`: Fill user_id and chat_id of groups/users you want to authorize. Separate them by space.
 - `SUDO_USERS`: Fill user_id of users whom you want to give sudo permission. Separate them by space.
 - `IGNORE_PENDING_REQUESTS`: Ignore pending requests after restart. Default is `False`. `Bool`
-- `USE_SERVICE_ACCOUNTS`: Whether to use Service Accounts or not. For this to work see [Using Service Accounts](https://github.com/anasty17/mirror-leech-telegram-bot#generate-service-accounts-what-is-service-account) section below. Default is `False`. `Bool`
+- `USE_SERVICE_ACCOUNTS`: Whether to use Service Accounts or not. For this to work see [Using Service Accounts](https://github.com/arshsisodiya/helios-mirror#generate-service-accounts-what-is-service-account) section below. Default is `False`. `Bool`
 - `INDEX_URL`: Refer to https://gitlab.com/ParveenBhadooOfficial/Google-Drive-Index.
 - `STATUS_LIMIT`: Limit the no. of tasks shown in status message with buttons. **NOTE**: Recommended limit is `4` tasks.
 - `STOP_DUPLICATE`: Bot will check file in Drive, if it is present in Drive, downloading or cloning will be stopped. (**NOTE**: File will be checked using filename not file hash, so this feature is not perfect yet). Default is `False`. `Bool`
@@ -145,7 +147,7 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `INCOMPLETE_TASK_NOTIFIER`: Get incomplete task messages after restart. Require database and (supergroup or channel). Default is `False`. `Bool`
 
 ### Update
-- `UPSTREAM_REPO`: Your github repository link, if your repo is private add `https://username:{githubtoken}@github.com/{username}/{reponame}` format. Get token from [Github settings](https://github.com/settings/tokens). So you can update your bot from filled repository on each restart. **NOTE**: Any change in docker or requirements you need to deploy/build again with updated repo to take effect. DON'T delete .gitignore file. For more information read [THIS](https://github.com/anasty17/mirror-leech-telegram-bot/tree/master#upstream-repo-recommended).
+- `UPSTREAM_REPO`: Your github repository link, if your repo is private add `https://username:{githubtoken}@github.com/{username}/{reponame}` format. Get token from [Github settings](https://github.com/settings/tokens). So you can update your bot from filled repository on each restart. **NOTE**: Any change in docker or requirements you need to deploy/build again with updated repo to take effect. DON'T delete .gitignore file. For more information read [THIS](https://github.com/arshsisodiya/helios-mirror/tree/master#upstream-repo-recommended).
 - `UPSTREAM_BRANCH`: Upstream branch for update. Default is `master`.
 
 ### Leech
@@ -172,7 +174,7 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `ACCOUNTS_ZIP_URL`: Only if you want to load your Service Account externally from an Index Link or by any direct download link NOT webpage link. Archive the accounts folder to ZIP file. Fill this with the direct download link of zip file. If index need authentication so add direct download as shown below:
   - `https://username:password@example.workers.dev/...`
 - `TOKEN_PICKLE_URL`: Only if you want to load your **token.pickle** externally from an Index Link. Fill this with the direct link of that file.
-- `MULTI_SEARCH_URL`: Check `drive_folder` setup [here](https://github.com/anasty17/mirror-leech-telegram-bot/tree/master#multi-search-ids). Write **drive_folder** file [here](https://gist.github.com/). Open the raw file of that gist, it's URL will be your required variable. Should be in this form after removing commit id: https://gist.githubusercontent.com/username/gist-id/raw/drive_folder
+- `MULTI_SEARCH_URL`: Check `drive_folder` setup [here](https://github.com/arshsisodiya/helios-mirror/tree/master#multi-search-ids). Write **drive_folder** file [here](https://gist.github.com/). Open the raw file of that gist, it's URL will be your required variable. Should be in this form after removing commit id: https://gist.githubusercontent.com/username/gist-id/raw/drive_folder
 - `YT_COOKIES_URL`: Youtube authentication cookies. Check setup [Here](https://github.com/ytdl-org/youtube-dl#how-do-i-pass-cookies-to-youtube-dl). Use gist raw link and remove commit id from the link, so you can edit it from gists only.
 - `NETRC_URL`: To create .netrc file contains authentication for aria2c and yt-dlp. Use gist raw link and remove commit id from the link, so you can edit it from gists only. **NOTE**: After editing .nterc you need to restart the docker or if deployed on heroku so restart dyno in case your edits related to aria2c authentication.
   - **NOTE**: All above url variables used incase you want edit them in future easily without deploying again or if you want to deploy from public fork. If deploying using cli or private fork you can leave these variables empty add token.pickle, accounts folder, drive_folder, .netrc and cookies.txt directly to root but you can't update them without rebuild OR simply leave all above variables and use private UPSTREAM_REPO.
@@ -189,7 +191,7 @@ Fill up rest of the fields. Meaning of each field is discussed below:
   >exe.io, gplinks.in, shrinkme.io, urlshortx.com, shortzon.com, bit.ly, shorte.st, linkvertise.com , ouo.io, adfoc.us, cutt.ly
 
 ### GDTOT
-- `CRYPT`: Cookie for gdtot google drive link generator. Follow these [steps](https://github.com/anasty17/mirror-leech-telegram-bot/tree/master#gdtot-cookies).
+- `CRYPT`: Cookie for gdtot google drive link generator. Follow these [steps](https://github.com/arshsisodiya/helios-mirror/tree/master#gdtot-cookies).
 
 ### Size Limits
 - `TORRENT_DIRECT_LIMIT`: To limit the Torrent/Direct mirror size. Don't add unit. Default unit is `GB`.
@@ -295,7 +297,7 @@ sudo docker stop id
 
 ### Deploying on VPS Using docker-compose
 
-**NOTE**: If you want to use port other than 80, change it in [docker-compose.yml](https://github.com/anasty17/mirror-leech-telegram-bot/blob/master/docker-compose.yml) also.
+**NOTE**: If you want to use port other than 80, change it in [docker-compose.yml](https://github.com/arshsisodiya/helios-mirror/blob/master/docker-compose.yml) also.
 
 ```
 sudo apt install docker-compose
@@ -545,5 +547,5 @@ To Clone or Leech gdtot link follow these steps:
 ## Credits
 
 P.s - Credit goes to all original developers of python, pyrogram, linux, heroku, mirror bots, leech bots, Mega, megasdkrest, sql database, google drive, telegram, and everything used in this project,
-  
+
   #### Main Credit - [Anas](https://github.com/anasty17/mirror-leech-telegram-bot)

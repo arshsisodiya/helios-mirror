@@ -61,7 +61,7 @@ def _clone(message, bot, multi=0):
         except DirectDownloadLinkException as e:
             deleteMessage(bot, msg)
             return sendMessage(str(e), bot, message)
-    elif is_appdrive:
+    if is_appdrive:
         msg = sendMessage(f"Processing: <code>{link}</code>", bot, message)
         try:
             apdict = appdrive(link)
@@ -129,7 +129,7 @@ def _clone(message, bot, multi=0):
         elif is_appdrive:
             if apdict.get('link_type') == 'login':
                 LOGGER.info(f"Deleting: {link}")
-                gd.deleteFile(link)
+                gd.deletefile(link)
         if MIRROR_LOGS:
             try:
                 for chatid in MIRROR_LOGS:

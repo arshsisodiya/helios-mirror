@@ -75,7 +75,7 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
 '''
         sendMarkup(start_string, context.bot, update.message, reply_markup)
     else:
-        sendMarkup('Not Authorized user, deploy your own mirror-leech bot', context.bot, update.message, reply_markup)
+        sendMarkup('𝙷𝚒𝚒👋, 𝙸𝚊𝚖 𝙺𝚒𝚛𝚊 𝙼𝚒𝚛𝚛𝚘𝚛 𝚋𝚘𝚝,𝚈𝚘𝚞 𝙰𝚛𝚎 𝙽𝚘𝚝 𝙰𝚋𝚕𝚎 𝚃𝚘 𝚄𝚜𝚎 𝙼𝚎!! 𝙹𝚘𝚒𝚗 𝙼𝚢 𝙻𝚎𝚎𝚌𝚑 𝙶𝚛𝚘𝚞𝚙', context.bot, update.message, reply_markup)
 
 def restart(update, context):
     restart_message = sendMessage("Restarting...", context.bot, update.message)

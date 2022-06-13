@@ -146,7 +146,7 @@ def get_readable_message():
                 else:
                     msg += f"\n<b>⌈➳ 👰 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳 💃 |:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
                 msg += f"\n<b>⌈➳ 📯 𝚂𝙿𝙴𝙴𝙳 ⚡ ⪡」:</b> {download.speed()} | <b>ETA:</b> {download.eta()}"
-                
+
                 msg += f"\n<b>⌈➳ 🕰 𝙴𝚂𝚃𝙸𝙼𝙰𝚃𝙴𝙳 𝚃𝙸𝙼𝙴 ⏳ : </b> <code>{download.eta()}⌛</code>"
                 msg += f"\n<b>⌈➳ 😎 𝙳𝚘𝚠𝚗𝚕𝚘𝚊𝚍𝚎𝚛 | </b> <b>{download.message.from_user.first_name}</b>\n<b>⌈➳ ⚠️ USER - ID ⪡」👉 </b><code>/warn {download.message.from_user.id}</code>"
 

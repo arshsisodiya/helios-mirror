@@ -79,7 +79,7 @@ class MirrorListener:
             try:
                 with download_dict_lock:
                     download_dict[self.uid] = ZipStatus(name, m_path, size)
-                path = m_path + ".zip"
+                path = f"{m_path}.zip"
                 LOGGER.info(f'Zip: orig_path: {m_path}, zip_path: {path}')
                 if self.pswd is not None:
                     if self.isLeech and int(size) > TG_SPLIT_SIZE:
@@ -210,12 +210,11 @@ class MirrorListener:
                         title='Helios-Mirror Source Link',
                         content=source_link,
                     )["path"]
-                    buttons.buildbutton(f"🔗 Source Link", f"https://telegra.ph/{link}")
+                    buttons.buildbutton("🔗 Source Link", f"https://telegra.ph/{link}")
                 else:
-                    buttons.buildbutton(f"🔗 Source Link", source_link)
+                    buttons.buildbutton("🔗 Source Link", source_link)
             except Exception as e:
                 LOGGER.warning(e)
-                pass
                 if reply_to is not None:
                     try:
                         reply_text = reply_to.text
@@ -226,12 +225,11 @@ class MirrorListener:
                                     title='Helios-Mirror Source Link',
                                     content=source_link,
                                 )["path"]
-                                buttons.buildbutton(f"🔗 Source Link", f"https://telegra.ph/{link}")
+                                buttons.buildbutton("🔗 Source Link", f"https://telegra.ph/{link}")
                             else:
-                                buttons.buildbutton(f"🔗 Source Link", source_link)
+                                buttons.buildbutton("🔗 Source Link", source_link)
                     except Exception as e:
                         LOGGER.warning(e)
-                        pass
             msg += f'\n<b>Total Files: </b>{folders}'
             if typ != 0:
                 msg += f'\n<b>Corrupted Files: </b>{typ}'
@@ -286,12 +284,11 @@ class MirrorListener:
                             title='Helios-Mirror Source Link',
                             content=source_link,
                         )["path"]
-                        buttons.buildbutton(f"🔗 𝚂𝙾𝚄𝚁𝙲𝙴 𝙻𝙸𝙽𝙺", f"https://telegra.ph/{link}")
+                        buttons.buildbutton("🔗 𝚂𝙾𝚄𝚁𝙲𝙴 𝙻𝙸𝙽𝙺", f"https://telegra.ph/{link}")
                     else:
-                        buttons.buildbutton(f"🔗 𝚂𝙾𝚄𝚁𝙲𝙴 𝙻𝙸𝙽𝙺", source_link)
+                        buttons.buildbutton("🔗 𝚂𝙾𝚄𝚁𝙲𝙴 𝙻𝙸𝙽𝙺", source_link)
                 except Exception as e:
                     LOGGER.warning(e)
-                    pass
             if reply_to is not None:
                 try:
                     reply_text = reply_to.text
@@ -302,12 +299,11 @@ class MirrorListener:
                                 title='Helios-Mirror Source Link',
                                 content=source_link,
                             )["path"]
-                            buttons.buildbutton(f"🔗 𝚂𝙾𝚄𝚁𝙲𝙴 𝙻𝙸𝙽𝙺", f"https://telegra.ph/{link}")
+                            buttons.buildbutton("🔗 𝚂𝙾𝚄𝚁𝙲𝙴 𝙻𝙸𝙽𝙺", f"https://telegra.ph/{link}")
                         else:
-                            buttons.buildbutton(f"🔗 𝚂𝙾𝚄𝚁𝙲𝙴 𝙻𝙸𝙽𝙺", source_link)
+                            buttons.buildbutton("🔗 𝚂𝙾𝚄𝚁𝙲𝙴 𝙻𝙸𝙽𝙺", source_link)
                 except Exception as e:
                     LOGGER.warning(e)
-                    pass
             sendMarkup(msg, self.bot, self.message, InlineKeyboardMarkup(buttons.build_menu(2)))
             if MIRROR_LOGS:
                 try:

@@ -17,7 +17,7 @@ def cancel_mirror(update, context):
         gid = args[1]
         dl = getDownloadByGid(gid)
         if not dl:
-            return sendMessage(f"GID: <code>{gid}</code> Not Found.", context.bot, update.message)
+            return sendMessage(f"GID: <code>{gid}</code> 𝙽𝙾𝚃 𝙵𝙾𝚄𝙽𝙳 🤯.", context.bot, update.message)
     elif update.message.reply_to_message:
         mirror_message = update.message.reply_to_message
         with download_dict_lock:
@@ -27,12 +27,12 @@ def cancel_mirror(update, context):
             else:
                 dl = None
         if not dl:
-            return sendMessage("This is not an active task!", context.bot, update.message)
+            return sendMessage("𝚃𝚑𝚒𝚜 𝚒𝚜 𝚗𝚘𝚝 𝚊𝚗 𝚊𝚌𝚝𝚒𝚟𝚎 𝚝𝚊𝚜𝚔!🤕", context.bot, update.message)
     elif len(args) == 1:
         msg = f"Reply to an active <code>/{BotCommands.MirrorCommand}</code> message which was used to start the download or send <code>/{BotCommands.CancelMirror} GID</code> to cancel it!"
         return sendMessage(msg, context.bot, update.message)
 
-    if OWNER_ID != user_id and dl.message.from_user.id != user_id and user_id not in SUDO_USERS and user_id != 314489490:
+    if OWNER_ID != user_id and dl.message.from_user.id != user_id and user_id not in SUDO_USERS:
         return sendMessage("This task is not for you!", context.bot, update.message)
 
     if dl.status() == MirrorStatus.STATUS_ARCHIVING:

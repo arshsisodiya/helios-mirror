@@ -198,7 +198,7 @@ def get_readable_message():
             buttons.sbutton("=> ρяєνιουѕ ⏩ ", "pre")
             buttons.sbutton("=> ղҽxԵ ⏩ ", "nex")
             button = InlineKeyboardMarkup(buttons.build_menu(2))
-            return msg, button
+            return msg + bmsg, button
         return msg + bmsg, ""
 
 def turn(data):

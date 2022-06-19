@@ -17,6 +17,7 @@ from bot.helper.ext_utils.bot_utils import is_url, is_magnet, is_gdtot_link, is_
 from bot.helper.ext_utils.fs_utils import get_base_name, get_path_size, split_file, clean_download
 from bot.helper.ext_utils.shortenurl import short_url
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException, NotSupportedExtractionArchive
+from bot.helper.ext_utils.bot_utils import get_readable_time
 from bot.helper.mirror_utils.download_utils.aria2_download import add_aria2c_download
 from bot.helper.mirror_utils.download_utils.gd_downloader import add_gd_download
 from bot.helper.mirror_utils.download_utils.qbit_downloader import QbDownloader
@@ -235,6 +236,7 @@ class MirrorListener:
             if typ != 0:
                 msg += f'\n<b>Corrupted Files: </b>{typ}'
             msg += f'\n<b>cc: </b>{self.tag}\n\n'
+            msg += f"\n<b>Time Elapsed: </b>{get_readable_time(time() - download.message.date.timestamp())}"
             if not files:
                 sendMessage(msg, self.bot, self.message)
             else:
@@ -253,6 +255,7 @@ class MirrorListener:
                 msg += f'\n<b>SubFolders: </b>{folders}'
                 msg += f'\n<b>Files: </b>{files}'
             msg += f'\n\n<b>cc: </b>{self.tag}'
+            msg += f"\n<b>Time Elapsed: </b>{get_readable_time(time() - download.message.date.timestamp())}"
             buttons = ButtonMaker()
             link = short_url(link)
             buttons.buildbutton("☁️ Drive Link", link)

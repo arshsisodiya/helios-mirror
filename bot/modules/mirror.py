@@ -78,7 +78,7 @@ class MirrorListener:
             try:
                 with download_dict_lock:
                     download_dict[self.uid] = ZipStatus(name, m_path, size)
-                path = m_path + ".zip"
+                path = f"{m_path}.zip"
                 LOGGER.info(f'Zip: orig_path: {m_path}, zip_path: {path}')
                 if self.pswd is not None:
                     if self.isLeech and int(size) > TG_SPLIT_SIZE:
@@ -209,12 +209,11 @@ class MirrorListener:
                         title='Helios-Mirror Source Link',
                         content=source_link,
                     )["path"]
-                    buttons.buildbutton(f"🔗 Source Link", f"https://telegra.ph/{link}")
+                    buttons.buildbutton("🔗 Source Link", f"https://telegra.ph/{link}")
                 else:
-                    buttons.buildbutton(f"🔗 Source Link", source_link)
+                    buttons.buildbutton("🔗 Source Link", source_link)
             except Exception as e:
                 LOGGER.warning(e)
-                pass
                 if reply_to is not None:
                     try:
                         reply_text = reply_to.text
@@ -225,16 +224,15 @@ class MirrorListener:
                                     title='Helios-Mirror Source Link',
                                     content=source_link,
                                 )["path"]
-                                buttons.buildbutton(f"🔗 Source Link", f"https://telegra.ph/{link}")
+                                buttons.buildbutton("🔗 Source Link", f"https://telegra.ph/{link}")
                             else:
-                                buttons.buildbutton(f"🔗 Source Link", source_link)
+                                buttons.buildbutton("🔗 Source Link", source_link)
                     except Exception as e:
                         LOGGER.warning(e)
-                        pass
             msg += f'\n<b>Total Files: </b>{folders}'
             if typ != 0:
                 msg += f'\n<b>Corrupted Files: </b>{typ}'
-            msg += f'\n<b>Elapsed:</b> {get_readable_time(time() - self.message.date.timestamp())}'    
+            msg += f'\n<b>Elapsed:</b> {get_readable_time(time() - self.message.date.timestamp())}'
             msg += f'\n<b>Tag: </b>{self.tag}\n\n'
             msg += f'\n\n<b>Thanks For using @darknessthenewlight_bot</b>'
             if not files:
@@ -254,7 +252,7 @@ class MirrorListener:
             if ospath.isdir(f'{DOWNLOAD_DIR}{self.uid}/{name}'):
                 msg += f'\n<b>SubFolders: </b>{folders}'
                 msg += f'\n<b>Files: </b>{files}'
-            msg += f'\n<b>Elapsed:</b> {get_readable_time(time() - self.message.date.timestamp())}'   
+            msg += f'\n<b>Elapsed:</b> {get_readable_time(time() - self.message.date.timestamp())}'
             msg += f'\n\n<b>Tag: </b>{self.tag}'
             msg += f'\n\n<b>Thanks For using @darknessthenewlight_bot</b>'
             buttons = ButtonMaker()
@@ -289,12 +287,11 @@ class MirrorListener:
                             title='Helios-Mirror Source Link',
                             content=source_link,
                         )["path"]
-                        buttons.buildbutton(f"🔗 Source Link", f"https://telegra.ph/{link}")
+                        buttons.buildbutton("🔗 Source Link", f"https://telegra.ph/{link}")
                     else:
-                        buttons.buildbutton(f"🔗 Source Link", source_link)
+                        buttons.buildbutton("🔗 Source Link", source_link)
                 except Exception as e:
                     LOGGER.warning(e)
-                    pass
             if reply_to is not None:
                 try:
                     reply_text = reply_to.text
@@ -305,12 +302,11 @@ class MirrorListener:
                                 title='Helios-Mirror Source Link',
                                 content=source_link,
                             )["path"]
-                            buttons.buildbutton(f"🔗 Source Link", f"https://telegra.ph/{link}")
+                            buttons.buildbutton("🔗 Source Link", f"https://telegra.ph/{link}")
                         else:
-                            buttons.buildbutton(f"🔗 Source Link", source_link)
+                            buttons.buildbutton("🔗 Source Link", source_link)
                 except Exception as e:
                     LOGGER.warning(e)
-                    pass
             sendMarkup(msg, self.bot, self.message, InlineKeyboardMarkup(buttons.build_menu(2)))
             if MIRROR_LOGS:
                 try:

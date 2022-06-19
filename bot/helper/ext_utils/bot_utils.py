@@ -186,7 +186,7 @@ def get_readable_message():
                     upspeed_bytes += float(spd.split('M')[0]) * 1048576
         bmsg += f"\n<b>🔻DL :</b> {get_readable_file_size(dlspeed_bytes)}/s | <b>🔺UL :</b> {get_readable_file_size(upspeed_bytes)}/s"
         if STATUS_LIMIT is not None and tasks > STATUS_LIMIT:
-            msg += f"<b>🗒️ Tital Page : {PAGE_NO}/{pages}</b> | <b>📫 Total Tasks : {tasks}</b>\n\n"
+            msg += f"<b>🗒️ Total Pages : {PAGE_NO}/{pages}</b> | <b>📫 Total Tasks : {tasks}</b>\n\n"
             buttons = ButtonMaker()
             buttons.sbutton("⏪ Previous", "status pre")
             buttons.sbutton("Next ⏩", "status nex")

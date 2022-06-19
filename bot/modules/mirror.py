@@ -236,6 +236,7 @@ class MirrorListener:
                 msg += f'\n<b>Corrupted Files: </b>{typ}'
             msg += f'\n<b>Elapsed:</b> {get_readable_time(time() - self.message.date.timestamp())}'    
             msg += f'\n<b>Tag: </b>{self.tag}\n\n'
+            msg += f'\n\n<b>Thanks For using @darknessthenewlight_bot</b>'
             if not files:
                 sendMessage(msg, self.bot, self.message)
             else:
@@ -255,6 +256,7 @@ class MirrorListener:
                 msg += f'\n<b>Files: </b>{files}'
             msg += f'\n<b>Elapsed:</b> {get_readable_time(time() - self.message.date.timestamp())}'   
             msg += f'\n\n<b>Tag: </b>{self.tag}'
+            msg += f'\n\n<b>Thanks For using @darknessthenewlight_bot</b>'
             buttons = ButtonMaker()
             link = short_url(link)
             buttons.buildbutton("☁️ Drive Link", link)

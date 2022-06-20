@@ -208,7 +208,8 @@ class TgUploader:
                                                                  progress=self.__upload_progress)
                         if BOT_PM:
                             try:
-                                app.send_document(chat_id=self.__user_id, document=self.__sent_msg.document.file_id, caption=cap_mono)
+                                app.send_document(chat_id=self.__user_id, document=self.__sent_msg.document.file_id,
+                                                  caption=cap_mono)
                             except Exception as err:
                                 LOGGER.error(f"Failed To Send Document in PM:\n{err}")
                 else:

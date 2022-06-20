@@ -363,17 +363,6 @@ class MirrorListener:
 
 def _mirror(bot, message, isZip=False, extract=False, isQbit=False, isLeech=False, pswd=None, multi=0):
     buttons = ButtonMaker()
-    length_of_leechlog = len(LEECH_LOG)
-    if isLeech and length_of_leechlog == 0:
-        try:
-            text = "Error: Leech Functionality will not work\nReason: Your Leech Log var is empty.\n\nRead the README file it's there for a reason."
-            msg = sendMessage(text, bot, message)
-            LOGGER.error("Leech Log var is Empty\nKindly add Chat id in Leech log to use Leech Functionality\nRead the README file it's there for a reason\n")
-            Thread(target=auto_delete_message, args=(bot, message, msg)).start()
-            return
-        except Exception as err:
-            LOGGER.error(f"Uff We got Some Error:\n{err}")
-            pass
     if BOT_PM and message.chat.type != 'private':
         try:
             msg1 = f'Added your Requested link to Download\n'

@@ -203,18 +203,19 @@ class MirrorListener:
             DbManger().rm_complete_task(self.message.link)
         msg = f"<b>Name: </b><code>{escape(name)}</code>\n\n<b>Size: </b>{size}"
         if self.isLeech:
-            try:
-                source_link = message_args[1]
-                if is_magnet(source_link):
-                    link = telegraph.create_page(
+            if SOURCE_LINK is True:
+                try:
+                    source_link = message_args[1]
+                    if is_magnet(source_link):
+                        link = telegraph.create_page(
                         title='Helios-Mirror Source Link',
                         content=source_link,
                     )["path"]
-                    buttons.buildbutton(f"🔗 Source Link", f"https://telegra.ph/{link}")
-                else:
-                    buttons.buildbutton(f"🔗 Source Link", source_link)
-            except Exception as e:
-                LOGGER.warning(e)
+                        buttons.buildbutton(f"🔗 Source Link", f"https://telegra.ph/{link}")
+                    else:
+                        buttons.buildbutton(f"🔗 Source Link", source_link)
+                except Exception as e:
+                    LOGGER.warning(e)
                 pass
                 if reply_to is not None:
                     try:

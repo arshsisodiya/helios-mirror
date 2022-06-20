@@ -2,6 +2,8 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 
 ## If you Like My work Star the repo and Follow me on Github
 
+## Notice  -  This Repo is not for newbies or noobs, so read the guide properly, No support will be provided for the deployment related errors and don't report useless deployment related errors, only Report Bot's Functionaning related issues, Read the Readme All extra features implemented by me is written there so don't ask or request for any other features.
+
 # Features:
 ## By [Arsh](https://github.com/arshsisodiya)
 - Mirror logs

@@ -114,7 +114,7 @@ _____REMOVE_THIS_LINE_____=True
 Fill up rest of the fields. Meaning of each field is discussed below:
 **0. Special Vars for features added by Arsh **
 
-- `LEECH_LOG` - Chat id of channel/group where leeched files will be uploaded, **NOTE:** only put 1 channel/group id starts with -100xxxxxxxxx, if you leave this empty bot will not send leeched files anywhere.
+- `LEECH_LOG` - Chat id of channel/group where leeched files will be uploaded, **NOTE:** only put 1 channel/group id starts with -100xxxxxxxxx, if you leave this empty bot will sent leech files in current chat.
 - `MIRROR_LOGS` - Chat id of channels/groups where you want to store Mirror logs
 - `BOT_PM` - set it `True` if you want to send mirror links and leeched files in user's PM, Default is `False`.
 - `MEGAREST` - set it `True` if you want to use Megasdkrest, Default is `False`.

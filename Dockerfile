@@ -1,4 +1,4 @@
-FROM hitesh920/anus:heroku
+FROM FROM anasty17/mltb:latest
 
 WORKDIR /usr/src/app
 RUN chmod 777 /usr/src/app

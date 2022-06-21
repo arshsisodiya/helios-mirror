@@ -48,8 +48,8 @@ if ospath.exists('.git'):
     srun(["rm", "-rf", ".git"])
 
 update = srun([f"git init -q \
-                 && git config --global user.email arshtwitterbot@gmail.com \
-                 && git config --global user.name itsmearsh \
+                 && git config --global user.email e.anastayyar@gmail.com \
+                 && git config --global user.name mltb \
                  && git add . \
                  && git commit -sm update -q \
                  && git remote add origin {UPSTREAM_REPO} \
@@ -57,6 +57,6 @@ update = srun([f"git init -q \
                  && git reset --hard origin/{UPSTREAM_BRANCH} -q"], shell=True)
 
 if update.returncode == 0:
-    log_info('Successfully updated with latest commit from UPSTREAM_REPO')
+    log_info('Successfully updated with latest commit from UPSTREAM_REPO MJWebHack')
 else:
     log_error('Something went wrong while updating, check UPSTREAM_REPO if valid or not!')

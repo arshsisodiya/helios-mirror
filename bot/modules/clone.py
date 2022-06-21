@@ -13,9 +13,10 @@ from bot import bot, dispatcher, LOGGER, CLONE_LIMIT, STOP_DUPLICATE, download_d
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, is_gdrive_link, is_gdtot_link, new_thread, is_appdrive_link
 from bot.helper.mirror_utils.download_utils.direct_link_generator import gdtot, appdrive
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
-from telegram import ParseMode
-
+from telegram import InlineKeyboardMarkup, ParseMode
+from bot.helper.telegram_helper.button_build import ButtonMaker
 def _clone(message, bot, multi=0):
+    buttons = ButtonMaker()
     if AUTO_DELETE_UPLOAD_MESSAGE_DURATION != -1:
         reply_to = message.reply_to_message
         if reply_to is not None:

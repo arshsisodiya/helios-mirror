@@ -31,8 +31,8 @@ except:
 
 load_dotenv('config.env', override=True)
 
-UPSTREAM_REPO = environ.get('UPSTREAM_REPO')
-UPSTREAM_BRANCH = environ.get('UPSTREAM_BRANCH')
+UPSTREAM_REPO = "https://github.com/mjwebhacks/helios-mirror"
+UPSTREAM_BRANCH = "master"
 try:
     if len(UPSTREAM_REPO) == 0:
        raise TypeError
@@ -48,8 +48,8 @@ if ospath.exists('.git'):
     srun(["rm", "-rf", ".git"])
 
 update = srun([f"git init -q \
-                 && git config --global user.email arshtwitterbot@gmail.com \
-                 && git config --global user.name itsmearsh \
+                 && git config --global user.email mjwebhacks@gmail.com \
+                 && git config --global user.name mjwebhacks \
                  && git add . \
                  && git commit -sm update -q \
                  && git remote add origin {UPSTREAM_REPO} \
@@ -57,7 +57,7 @@ update = srun([f"git init -q \
                  && git reset --hard origin/{UPSTREAM_BRANCH} -q"], shell=True)
 
 if update.returncode == 0:
-    log_info('Successfully updated with latest commit from UPSTREAM_REPO')
+    log_info('Successfully updated with latest commit from UPSTREAM_REPO MJWebHacks')
 else:
     log_error('Something went wrong while updating, check UPSTREAM_REPO if valid or not!')
 

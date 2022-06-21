@@ -5,7 +5,7 @@ from telegram.error import RetryAfter
 from pyrogram.errors import FloodWait
 
 from bot import AUTO_DELETE_MESSAGE_DURATION, LOGGER, status_reply_dict, status_reply_dict_lock, \
-                Interval, DOWNLOAD_STATUS_UPDATE_INTERVAL, RSS_CHAT_ID, bot, rss_session
+                Interval, DOWNLOAD_STATUS_UPDATE_INTERVAL, RSS_CHAT_ID, bot, rss_session, AUTO_DELETE_UPLOAD_MESSAGE_DURATION
 from bot.helper.ext_utils.bot_utils import get_readable_message, setInterval
 
 
@@ -103,7 +103,17 @@ def delete_all_messages():
                 del status_reply_dict[message.chat.id]
             except Exception as e:
                 LOGGER.error(str(e))
-
+def auto_delete_upload_message(bot, cmd_message: Message, bot_message: Message):
+    if cmd_message.chat.type == 'private':
+        pass
+    elif AUTO_DELETE_UPLOAD_MESSAGE_DURATION != -1:
+        sleep(AUTO_DELETE_UPLOAD_MESSAGE_DURATION)
+        try:
+            # Skip if None is passed meaning we don't want to delete bot or cmd message
+            deleteMessage(bot, cmd_message)
+            deleteMessage(bot, bot_message)
+        except AttributeError:
+            pass
 def update_all_messages():
     msg, buttons = get_readable_message()
     with status_reply_dict_lock:

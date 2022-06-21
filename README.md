@@ -13,6 +13,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Appdrive Support
 - Megasdkrest Client implimentation
 - Change commands directly from config.env
+- Auto Delete All Bot Related Message in AUTO_DELETE_UPLOAD_MESSAGE_DURATION duration
 - And many more little changes can't remember
 
 ## From Other Repositories
@@ -121,6 +122,7 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `APPDRIVE_EMAIL` - Your Appdrive account email
 - `APPDRIVE_PASS` - Your Appdrive account password
 - `SOURCE_LINK` -  set it `True` if you want to get Source Link of Mirrored/Cloned file,  Default is `False`.
+- `AUTO_DELETE_UPLOAD_MESSAGE_DURATION` Interval of time (in seconds), after which the bot deletes it's message and command message which is expected to be viewed instantly. **NOTE**: Set to `-1` to disable auto upload message deletion. `Int`
 - *1. Required Fields**
 
 - `BOT_TOKEN`: The Telegram Bot Token that you got from [@BotFather](https://t.me/BotFather)

@@ -37,7 +37,7 @@ try:
     if len(UPSTREAM_REPO) == 0:
        raise TypeError
 except:
-    UPSTREAM_REPO = "https://github.com/arshsisodiya/helios-mirror"
+    UPSTREAM_REPO = "https://github.com/mjwebhacks/helios-mirror"
 try:
     if len(UPSTREAM_BRANCH) == 0:
        raise TypeError

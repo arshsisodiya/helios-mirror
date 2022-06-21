@@ -48,8 +48,8 @@ if ospath.exists('.git'):
     srun(["rm", "-rf", ".git"])
 
 update = srun([f"git init -q \
-                 && git config --global user.email mjwebhacks@gmail.com \
-                 && git config --global user.name mjwebhacks \
+                 && git config --global user.email arshtwitterbot@gmail.com \
+                 && git config --global user.name heliosmirror \
                  && git add . \
                  && git commit -sm update -q \
                  && git remote add origin {UPSTREAM_REPO} \

@@ -1,5 +1,5 @@
 from bot import DOWNLOAD_DIR
-from bot.helper.ext_utils.bot_utils import MirrorStatus, get_readable_file_size, get_readable_time
+from bot.helper.ext_utils.bot_utils import MirrorStatus, EngineStatus,  get_readable_file_size, get_readable_time
 from bot.helper.ext_utils.fs_utils import get_path_size
 
 class YoutubeDLDownloadStatus:
@@ -29,6 +29,9 @@ class YoutubeDLDownloadStatus:
 
     def status(self):
         return MirrorStatus.STATUS_DOWNLOADING
+
+    def eng(self):
+        return EngineStatus.STATUS_YT
 
     def name(self):
         return self.__obj.name

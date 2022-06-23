@@ -1,5 +1,5 @@
 from bot import DOWNLOAD_DIR, LOGGER
-from bot.helper.ext_utils.bot_utils import MirrorStatus, get_readable_file_size, get_readable_time
+from bot.helper.ext_utils.bot_utils import MirrorStatus, EngineStatus, get_readable_file_size, get_readable_time
 
 def get_download(client, hash_):
     try:
@@ -71,6 +71,9 @@ class QbDownloadStatus:
             return MirrorStatus.STATUS_SEEDING
         else:
             return MirrorStatus.STATUS_DOWNLOADING
+
+    def eng(self):
+        return EngineStatus.STATUS_QB
 
     def torrent_info(self):
         return self.__info

@@ -1,5 +1,5 @@
 from bot import aria2, DOWNLOAD_DIR, LOGGER
-from bot.helper.ext_utils.bot_utils import MirrorStatus
+from bot.helper.ext_utils.bot_utils import MirrorStatus, EngineStatus
 
 def get_download(gid):
     try:
@@ -64,6 +64,9 @@ class AriaDownloadStatus:
             return MirrorStatus.STATUS_FAILED
         else:
             return MirrorStatus.STATUS_DOWNLOADING
+
+    def eng(self):
+        return EngineStatus.STATUS_ARIA
 
     def aria_download(self):
         return self.__download

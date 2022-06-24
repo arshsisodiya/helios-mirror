@@ -81,7 +81,7 @@ class MirrorListener:
         if self.isZip:
             try:
                 with download_dict_lock:
-                    download_dict[self.uid] = ZipStatus(name, m_path, size, self.message)
+                    download_dict[self.uid] = ZipStatus(name, m_path, size)
                 path = m_path + ".zip"
                 LOGGER.info(f'Zip: orig_path: {m_path}, zip_path: {path}')
                 if self.pswd is not None:
@@ -154,7 +154,7 @@ class MirrorListener:
                         if not checked:
                             checked = True
                             with download_dict_lock:
-                                download_dict[self.uid] = SplitStatus(up_name, up_path, size, self.message)
+                                download_dict[self.uid] = SplitStatus(up_name, up_path, size)
                             LOGGER.info(f"Splitting: {up_name}")
                         split_file(f_path, f_size, file_, dirpath, TG_SPLIT_SIZE)
                         osremove(f_path)

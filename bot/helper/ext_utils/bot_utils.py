@@ -38,7 +38,7 @@ class EngineStatus:
     STATUS_GDRIVE = "Google API"
     STATUS_MEGA = "Mega API"
     STATUS_QB = "qBittorrent"
-    STATUS_TG = "Pyrogram - Uploading on TG"
+    STATUS_TG = "Pyrogram"
     STATUS_YT = "Yt-dlp"
     STATUS_EXT = "extract | pextract"
     STATUS_SPLIT = "FFmpeg"

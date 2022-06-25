@@ -1,10 +1,29 @@
-FROM hitesh920/anus:heroku
+# FROM hitesh920/anus:heroku
+
+# WORKDIR /usr/src/app
+# RUN chmod 777 /usr/src/app
+
+# COPY . .
+
+# RUN pip3 install --no-cache-dir -r requirements.txt
+
+# CMD ["bash", "start.sh"]
+
+
+FROM breakdowns/mega-sdk-python:latest
 
 WORKDIR /usr/src/app
 RUN chmod 777 /usr/src/app
 
-COPY . .
-
+COPY requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-CMD ["bash", "start.sh"]
+COPY extract /usr/local/bin
+COPY pextract /usr/local/bin
+RUN chmod +x /usr/local/bin/extract && chmod +x /usr/local/bin/pextract
+COPY . .
+COPY .netrc /root/.netrc
+RUN chmod 600 /usr/src/app/.netrc
+RUN chmod +x aria.sh
+
+CMD ["bash","start.sh"]

@@ -1,4 +1,4 @@
-FROM hitesh920/anus:heroku
+FROM arata74/mirrorhunter:latest
 
 WORKDIR /usr/src/app
 RUN chmod 777 /usr/src/app

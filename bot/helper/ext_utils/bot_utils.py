@@ -164,11 +164,11 @@ def get_readable_message():
                 if download.message.chat.type != 'private':
                     try:
                         chatid = str(download.message.chat.id)[4:]
-                        msg += f'\n<b>Source: </b><a href="https://t.me/c/{chatid}/{download.message.message_id}">{download.message.from_user.first_name}</a>(<code>{download.message.from_user.id}</code>)'
+                        msg += f'\n<b>Source: </b><a href="https://t.me/c/{chatid}/{download.message.message_id}">{download.message.from_user.first_name}</a> | <b>Id :</b> <code>{download.message.from_user.id}</code>'
                     except:
                         pass
                 else:
-                    msg += f'\n<b>User: </b> ️<code>{download.message.from_user.first_name}</code>️(<code>{download.message.from_user.id}</code>)'
+                    msg += f'\n<b>User:</b> ️<code>{download.message.from_user.first_name}</code> | <b>Id:</b> <code>{download.message.from_user.id}</code>'
                 msg += f"\n<b>To Stop: </b><code>/{BotCommands.CancelMirror} {download.gid()}</code>"
             elif download.status() == MirrorStatus.STATUS_SEEDING:
                 msg += f"\n<b>Size: </b>{download.size()}"

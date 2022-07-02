@@ -57,13 +57,12 @@ def getHerokuDetails(h_api_key, h_app_name):
         path = "/accounts/" + user_id + "/actions/get-quota"
         session = Session()
         result = (session.get(heroku_api + path, headers=headers)).json()
-        stats = "\n<b>Heroku Dyno Stats</b>\n\n"
         account_quota = result["account_quota"]
         quota_used = result["quota_used"]
         quota_remain = account_quota - quota_used
-        stats += f"<b>Total Dyno Hours:</b> {get_readable_time(account_quota)}\n"
-        stats += f"<b>Used Dyno:</b> {get_readable_time(quota_used)}\n"
-        stats += f"<b>Free Dyno:</b> {get_readable_time(quota_remain)}\n"
+        stats = f"<b>Total Dyno:</b> {get_readable_time(account_quota)}\n"
+        stats += f"<b>Used:</b> {get_readable_time(quota_used)} | "
+        stats += f"<b>Free:</b> {get_readable_time(quota_remain)}\n"
         # App Quota
         AppQuotaUsed = 0
         OtherAppsUsage = 0
@@ -83,8 +82,8 @@ def getHerokuDetails(h_api_key, h_app_name):
                     LOGGER.error(t)
                     pass
         LOGGER.info(f"This App: {str(app.name)}")
-        stats += f"<b>App {str(app.name)} Usage:</b> {get_readable_time(AppQuotaUsed)}\n"
-        stats += f"<b>Other Apps Usage:</b> {get_readable_time(OtherAppsUsage)}"
+        stats += f"<b>This App:</b> {get_readable_time(AppQuotaUsed)} | "
+        stats += f"<b>Other Apps:</b> {get_readable_time(OtherAppsUsage)}"
         return stats
     except Exception as error:
         LOGGER.error(error)

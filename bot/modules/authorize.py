@@ -201,10 +201,7 @@ def removeSudo(update, context):
     if len(message_) == 2:
         user_id = int(message_[1])
         if user_id in SUDO_USERS:
-            if DB_URI is not None:
-                msg = DbManger().user_rmsudo(user_id)
-            else:
-                msg = 'Demoted'
+            msg = DbManger().user_rmsudo(user_id) if DB_URI is not None else 'Demoted'
             SUDO_USERS.remove(user_id)
         else:
             msg = 'Not sudo user to demote!'
@@ -213,10 +210,7 @@ def removeSudo(update, context):
     else:
         user_id = reply_message.from_user.id
         if user_id in SUDO_USERS:
-            if DB_URI is not None:
-                msg = DbManger().user_rmsudo(user_id)
-            else:
-                msg = 'Demoted'
+            msg = DbManger().user_rmsudo(user_id) if DB_URI is not None else 'Demoted'
             SUDO_USERS.remove(user_id)
         else:
             msg = 'Not sudo user to demote!'

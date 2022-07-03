@@ -132,7 +132,7 @@ class QbDownloader:
                     if qbname.endswith('.!qB'):
                         qbname = ospath.splitext(qbname)[0]
                     if self.__listener.isZip:
-                        qbname = qbname + ".zip"
+                        qbname = f"{qbname}.zip"
                     elif self.__listener.extract:
                         try:
                            qbname = get_base_name(qbname)

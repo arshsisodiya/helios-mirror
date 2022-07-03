@@ -137,10 +137,7 @@ class YoutubeDLHelper:
             ext = realName.split('.')[-1]
             if name == "":
                 newname = str(realName).split(f" [{result['id'].replace('*', '_')}]")
-                if len(newname) > 1:
-                    self.name = newname[0] + '.' + ext
-                else:
-                    self.name = newname[0]
+                self.name = f'{newname[0]}.{ext}' if len(newname) > 1 else newname[0]
             else:
                 self.name = f"{name}.{ext}"
 
@@ -167,10 +164,7 @@ class YoutubeDLHelper:
         if qual.startswith('ba/b'):
             audio_info = qual.split('-')
             qual = audio_info[0]
-            if len(audio_info) == 2:
-                rate = audio_info[1]
-            else:
-                rate = 320
+            rate = audio_info[1] if len(audio_info) == 2 else 320
             self.opts['postprocessors'] = [{'key': 'FFmpegExtractAudio','preferredcodec': 'mp3','preferredquality': f'{rate}'}]
         self.opts['format'] = qual
         LOGGER.info(f"Downloading with YT-DLP: {link}")
@@ -183,10 +177,12 @@ class YoutubeDLHelper:
                 msg = f'You must leave {STORAGE_THRESHOLD}GB free storage.'
                 msg += f'\nYour File/Folder size is {get_readable_file_size(self.size)}'
                 return self.__onDownloadError(msg)
-        if not self.is_playlist:
-            self.opts['outtmpl'] = f"{path}/{self.name}"
-        else:
-            self.opts['outtmpl'] = f"{path}/{self.name}/%(title)s.%(ext)s"
+        self.opts['outtmpl'] = (
+            f"{path}/{self.name}/%(title)s.%(ext)s"
+            if self.is_playlist
+            else f"{path}/{self.name}"
+        )
+
         self.__download(link)
 
     def cancel_download(self):

@@ -34,8 +34,8 @@ load_dotenv('config.env', override=True)
 UPSTREAM_REPO = "https://github.com/mjwebhacks/helios-mirror"
 UPSTREAM_BRANCH = environ.get('UPSTREAM_BRANCH')
 try:
-    if len(UPSTREAM_REPO) == 0:
-       raise TypeError
+    if not UPSTREAM_REPO:
+        raise TypeError
 except:
     UPSTREAM_REPO = "https://github.com/arshsisodiya/helios-mirror"
 try:

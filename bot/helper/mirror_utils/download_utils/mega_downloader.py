@@ -50,7 +50,7 @@ class MegaDownloader:
             return self.__name
 
     @property
-    def download_speed(self):
+    def speed(self):
         if self.gid is not None:
             return self.__mega_client.getDownloadInfo(self.gid)['speed']
 

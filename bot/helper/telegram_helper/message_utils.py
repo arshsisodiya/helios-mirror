@@ -1,4 +1,4 @@
-from time import sleep
+from time import sleep, time
 from telegram import InlineKeyboardMarkup
 from telegram.message import Message
 from telegram.error import RetryAfter
@@ -117,6 +117,7 @@ def delete_all_messages():
                 del status_reply_dict[message.chat.id]
             except Exception as e:
                 LOGGER.error(str(e))
+
 def auto_delete_upload_message(bot, cmd_message: Message, bot_message: Message):
     if cmd_message.chat.type == 'private':
         pass
@@ -128,6 +129,7 @@ def auto_delete_upload_message(bot, cmd_message: Message, bot_message: Message):
             deleteMessage(bot, bot_message)
         except AttributeError:
             pass
+
 def update_all_messages():
     msg, buttons = get_readable_message()
     with status_reply_dict_lock:
@@ -143,6 +145,8 @@ def sendStatusMessage(msg, bot):
     if len(Interval) == 0:
         Interval.append(setInterval(DOWNLOAD_STATUS_UPDATE_INTERVAL, update_all_messages))
     progress, buttons = get_readable_message()
+    if progress is None:
+        return
     with status_reply_dict_lock:
         if msg.chat.id in list(status_reply_dict.keys()):
             try:

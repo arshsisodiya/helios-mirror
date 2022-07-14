@@ -21,11 +21,10 @@ PAGE_NO = 1
 
 
 class MirrorStatus:
-    STATUS_UPLOADING = "Uploading...📤"
-    STATUS_DOWNLOADING = "Downloading...📥"
-    STATUS_CLONING = "Cloning...♻️"
+    STATUS_UPLOADING = "Up📤"
+    STATUS_DOWNLOADING = "Down📥"
+    STATUS_CLONING = "Cloning♻️"
     STATUS_WAITING = "Queued...💤"
-    STATUS_FAILED = "Failed 🚫. Cleaning Download..."
     STATUS_PAUSE = "Paused...⛔️"
     STATUS_ARCHIVING = "Archiving...🔐"
     STATUS_EXTRACTING = "Extracting...📂"
@@ -78,34 +77,32 @@ def get_readable_file_size(size_in_bytes) -> str:
 def getDownloadByGid(gid):
     with download_dict_lock:
         for dl in list(download_dict.values()):
-            status = dl.status()
-            if (
-                status
-                not in [
-                    MirrorStatus.STATUS_ARCHIVING,
-                    MirrorStatus.STATUS_EXTRACTING,
-                    MirrorStatus.STATUS_SPLITTING,
-                ]
-                and dl.gid() == gid
-            ):
+            if dl.gid() == gid:
                 return dl
     return None
 
 def getAllDownload(req_status: str):
     with download_dict_lock:
         for dl in list(download_dict.values()):
-            status = dl.status()
-            if status not in [MirrorStatus.STATUS_ARCHIVING, MirrorStatus.STATUS_EXTRACTING, MirrorStatus.STATUS_SPLITTING] and dl:
-                if req_status == 'down' and (status not in [MirrorStatus.STATUS_UPLOADING,
-                                                            MirrorStatus.STATUS_CLONING]):
+            if dl:
+                status = dl.status()
+                if req_status == 'all':
                     return dl
-                elif req_status == 'up' and status == MirrorStatus.STATUS_UPLOADING:
+                if req_status == 'down' and status in [MirrorStatus.STATUS_DOWNLOADING,
+                                                         MirrorStatus.STATUS_WAITING,
+                                                         MirrorStatus.STATUS_PAUSE]:
                     return dl
-                elif req_status == 'clone' and status == MirrorStatus.STATUS_CLONING:
+                if req_status == 'up' and status == MirrorStatus.STATUS_UPLOADING:
                     return dl
-                elif req_status == 'all':
+                if req_status == 'clone' and status == MirrorStatus.STATUS_CLONING:
                     return dl
-    return None
+                if req_status == 'split' and status == MirrorStatus.STATUS_SPLITTING:
+                    return dl
+                if req_status == 'extract' and status == MirrorStatus.STATUS_EXTRACTING:
+                    return dl
+                if req_status == 'archive' and status == MirrorStatus.STATUS_ARCHIVING:
+                    return dl
+    return Non
 
 def get_progress_bar_string(status):
     completed = status.processed_bytes() / 8
@@ -131,18 +128,20 @@ def get_readable_message():
         for index, download in enumerate(list(download_dict.values())[COUNT:], start=1):
             msg += f"<b>Name:</b> <code>{escape(str(download.name()))}</code>"
             msg += f"\n<b>Status:</b> <i>{download.status()}</i>\n<b>Engine:</b> {download.eng()}"
-            if download.status() not in [
-                MirrorStatus.STATUS_ARCHIVING,
-                MirrorStatus.STATUS_EXTRACTING,
-                MirrorStatus.STATUS_SPLITTING,
-            ]:
+            if download.status() not in [MirrorStatus.STATUS_SPLITTING]:
                 msg += f"\n{get_progress_bar_string(download)} {download.progress()}"
-                if download.status() == MirrorStatus.STATUS_CLONING:
-                    msg += f"\n<b>Cloned:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
+                if download.status() in [MirrorStatus.STATUS_DOWNLOADING,
+                                         MirrorStatus.STATUS_WAITING,
+                                         MirrorStatus.STATUS_PAUSE]:
+                    msg += f"\n<b>Downloaded:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
                 elif download.status() == MirrorStatus.STATUS_UPLOADING:
                     msg += f"\n<b>Uploaded:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
-                else:
-                    msg += f"\n<b>Downloaded:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
+                elif download.status() == MirrorStatus.STATUS_CLONING:
+                    msg += f"\n<b>Cloned:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
+                elif download.status() == MirrorStatus.STATUS_ARCHIVING:
+                    msg += f"\n<b>Archived:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
+                elif download.status() == MirrorStatus.STATUS_EXTRACTING:
+                    msg += f"\n<b>Extracted:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
                 msg += f"\n<b>Speed:</b> {download.speed()} | <b>ETA:</b> {download.eta()}"
                 msg += f"\n<b>Time Elapsed: </b>{get_readable_time(time() - download.message.date.timestamp())}"
                 try:
@@ -162,9 +161,8 @@ def get_readable_message():
                     except:
                         pass
                 else:
-                    msg += f'\n<b>User:</b> ️<code>{download.message.from_user.first_name}</code> | <b>Id:</b> <code>{download.message.from_user.id}</code>'
+                    msg += ''
                 msg += f"\n<b>To Stop: </b><code>/{BotCommands.CancelMirror} {download.gid()}</code>"
-                msg += f"\n<b>Size: </b>{download.size()}"
             msg += "\n\n"
             if STATUS_LIMIT is not None and index == STATUS_LIMIT:
                 break
@@ -188,6 +186,8 @@ def get_readable_message():
         buttons = ButtonMaker()
         buttons.sbutton("Statistics", str(FOUR))
         sbutton = InlineKeyboardMarkup(buttons.build_menu(1))
+        if len(msg) == 0:
+            return None
         if STATUS_LIMIT is not None and tasks > STATUS_LIMIT:
             buttons = ButtonMaker()
             buttons.sbutton("Previous", "status pre")
@@ -248,7 +248,6 @@ def is_gdrive_link(url: str):
 def is_gdtot_link(url: str):
     url = re_match(r'https?://.+\.gdtot\.\S+', url)
     return bool(url)
-
 def is_appdrive_link(url: str):
     url = re_match(r'https?://(?:\S*\.)?(?:appdrive|driveapp)\.in/\S+', url)
     return bool(url)
@@ -316,26 +315,28 @@ def bot_sys_stats():
     num_archi = 0
     tasks = len(download_dict)
     for stats in list(download_dict.values()):
-       if stats.status() == MirrorStatus.STATUS_DOWNLOADING:
-                num_active += 1
-       if stats.status() == MirrorStatus.STATUS_UPLOADING:
-                num_upload += 1
-       if stats.status() == MirrorStatus.STATUS_ARCHIVING:
-                num_archi += 1
-       if stats.status() == MirrorStatus.STATUS_EXTRACTING:
-                num_extract += 1
-       if stats.status() == MirrorStatus.STATUS_SPLITTING:
-                num_split += 1
+        if stats.status() == MirrorStatus.STATUS_DOWNLOADING:
+            num_active += 1
+        if stats.status() == MirrorStatus.STATUS_UPLOADING:
+            num_upload += 1
+        if stats.status() == MirrorStatus.STATUS_ARCHIVING:
+            num_archi += 1
+        if stats.status() == MirrorStatus.STATUS_EXTRACTING:
+            num_extract += 1
+        if stats.status() == MirrorStatus.STATUS_SPLITTING:
+            num_split += 1
     stats = f"""
-BOT UPTIME: {currentTime}\n
-CPU : {cpu}% || RAM : {mem_p}%\n
-USED : {used} || FREE :{free}
-SENT : {sent} || RECV : {recv}\n
-ONGOING TASKS:
-DL: {num_active} || UP : {num_upload} || SPLIT : {num_split}
-ZIP : {num_archi} || UNZIP : {num_extract} || TOTAL : {tasks} 
-"""
+    BOT UPTIME: {currentTime}\n
+    CPU : {cpu}% || RAM : {mem_p}%\n
+    USED : {used} || FREE :{free}
+    SENT : {sent} || RECV : {recv}\n
+    ONGOING TASKS:
+    DL: {num_active} || UP : {num_upload} || SPLIT : {num_split}
+    ZIP : {num_archi} || UNZIP : {num_extract} || TOTAL : {tasks} 
+    """
     return stats
+
+
 dispatcher.add_handler(
     CallbackQueryHandler(pop_up_stats, pattern="^" + str(FOUR) + "$")
 )

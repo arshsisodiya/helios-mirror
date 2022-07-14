@@ -60,5 +60,6 @@ class _BotCommands:
         self.ClearLocalsCommand = f'clearlocals{CMD_INDEX}'
         self.AddleechlogCommand = getCommand('ADDLEECHLOG_COMMAND', f'addleechlog{CMD_INDEX}')
         self.RmleechlogCommand = getCommand('RMLEECHLOG_COMMAND', f'rmleechlog{CMD_INDEX}')
+        self.QbSelectCommand = getCommand('QBSELECT_COMMAND', f'qbsel{CMD_INDEX}')
 
 BotCommands = _BotCommands()

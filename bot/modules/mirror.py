@@ -403,7 +403,7 @@ class MirrorListener:
 
 def _mirror(bot, message, isZip=False, extract=False, isQbit=False, isLeech=False, pswd=None, multi=0):
     buttons = ButtonMaker()
-    if BOT_PM and message.chat.type != 'private':
+    if BOT_PM and message.chat.type != 'private' and message.from_user.id != 777000:
         try:
             msg1 = f'Added your Requested link to Download\n'
             send = bot.sendMessage(message.from_user.id, text=msg1)

@@ -19,7 +19,7 @@ def _watch(bot, message, isZip=False, isLeech=False, multi=0):
     user_id = message.from_user.id
     msg_id = message.message_id
     buttons = ButtonMaker()
-    if BOT_PM and message.chat.type != 'private':
+    if BOT_PM andmessage.chat.type != 'private' and message.from_user.id != 777000:
         try:
             msg1 = f'Added your Requested link to Download\n'
             send = bot.sendMessage(message.from_user.id, text=msg1)

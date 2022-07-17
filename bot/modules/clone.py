@@ -21,7 +21,7 @@ def _clone(message, bot, multi=0):
         reply_to = message.reply_to_message
         if reply_to is not None:
             reply_to.delete()
-    if BOT_PM:
+    if BOT_PM and message.from_user.id != 777000::
         try:
             msg1 = f'Added your Requested link to Download\n'
             send = bot.sendMessage(message.from_user.id, text=msg1)
@@ -142,7 +142,7 @@ def _clone(message, bot, multi=0):
                     bot.sendMessage(chat_id=chatid, text=result + cc, reply_markup=button, parse_mode=ParseMode.HTML)
             except Exception as e:
                 LOGGER.warning(e)
-        if BOT_PM and message.chat.type != 'private':
+        if BOT_PM and message.chat.type != 'private' and message.from_user.id != 777000:
             try:
                 bot.sendMessage(message.from_user.id, text=result, reply_markup=button,
                                 parse_mode=ParseMode.HTML)

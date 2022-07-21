@@ -67,8 +67,6 @@ class QbDownloadStatus:
             return MirrorStatus.STATUS_PAUSE
         elif download in ["checkingUP", "checkingDL"]:
             return MirrorStatus.STATUS_CHECKING
-        elif download in ["stalledUP", "uploading", "forcedUP"]:
-            return MirrorStatus.STATUS_SEEDING
         else:
             return MirrorStatus.STATUS_DOWNLOADING
 

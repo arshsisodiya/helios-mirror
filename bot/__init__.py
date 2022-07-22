@@ -196,16 +196,11 @@ Thread(target=aria2c_init).start()
 sleep(1.5)
 
 try:
-    MEGAREST = getConfig('MEGAREST')
-    MEGAREST = MEGAREST.lower() == 'true'
-except KeyError:
-    MEGAREST = False
-try:
     MEGA_API_KEY = getConfig("MEGA_API_KEY")
 except KeyError:
     MEGA_API_KEY = None
     LOGGER.info("MEGA API KEY NOT AVAILABLE")
-if MEGAREST is True:
+if MEGA_API_KEY is not None:
     # Start megasdkrest binary
     Popen(["megasdkrest", "--apikey", MEGA_API_KEY])
     sleep(3)  # Wait for the mega server to start listening

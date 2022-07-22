@@ -190,7 +190,6 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `MEGA_API_KEY`: Mega.nz API key to mirror mega.nz links. Get it from [Mega SDK Page](https://mega.nz/sdk)
 - `MEGA_EMAIL_ID`: E-Mail ID used to sign up on mega.nz for using premium account.
 - `MEGA_PASSWORD`: Password for mega.nz account.
-- `MEGAREST`: - set it `True` if you want to use Megasdkrest, Default is `False`.
 
 ### GDTOT
 - `CRYPT`: Cookie for gdtot google drive link generator. Follow these [steps](https://github.com/arshsisodiya/helios-mirror/tree/master#gdtot-cookies).

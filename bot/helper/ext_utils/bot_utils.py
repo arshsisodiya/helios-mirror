@@ -37,7 +37,7 @@ class EngineStatus:
     STATUS_GDRIVE = "Google API"
     STATUS_MEGA = "Mega API"
     STATUS_QB = "qBittorrent"
-    STATUS_TG = "Pyrogram - Uploading on TG"
+    STATUS_TG = "Pyrogram"
     STATUS_YT = "Yt-dlp"
     STATUS_EXT = "extract | pextract"
     STATUS_SPLIT = "FFmpeg"
@@ -145,7 +145,6 @@ def get_readable_message():
                     msg += f"\n<b>Downloaded:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
                 msg += f"\n<b>Speed:</b> {download.speed()} | <b>ETA:</b> {download.eta()}"
                 msg += f"\n<b>Time Elapsed: </b>{get_readable_time(time() - download.message.date.timestamp())}"
-                msg += f"\n<b>Engine:</b> {download.eng()}"
                 try:
                     msg += f"\n<b>Seeders:</b> {download.aria_download().num_seeders}" \
                            f" | <b>Peers:</b> {download.aria_download().connections}"

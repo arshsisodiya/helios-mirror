@@ -8,7 +8,7 @@ from pyrogram import Client, enums
 
 from bot import DOWNLOAD_DIR, AS_DOCUMENT, AS_DOC_USERS, AS_MEDIA_USERS, CUSTOM_FILENAME, \
                  EXTENTION_FILTER, app, LEECH_LOG, BOT_PM
-from bot.helper.ext_utils.fs_utils import take_ss, get_media_info, get_video_resolution, get_path_size
+from bot.helper.ext_utils.fs_utils import take_ss, get_media_info, get_path_size
 from bot.helper.ext_utils.bot_utils import get_readable_file_size
 
 LOGGER = getLogger(__name__)
@@ -93,7 +93,8 @@ class TgUploader:
                         img = Image.open(thumb)
                         width, height = img.size
                     else:
-                        width, height = get_video_resolution(up_path)
+                        width = 480
+                        height = 320
                     if not file_.upper().endswith(("MKV", "MP4")):
                         file_ = ospath.splitext(file_)[0] + '.mp4'
                         new_path = ospath.join(dirpath, file_)

@@ -28,7 +28,7 @@ class TelegramDownloadStatus:
         return MirrorStatus.STATUS_DOWNLOADING
 
     def eng(self):
-        return EngineStatus.STATUS_TG
+        return EngineStatus.STATUS_TG_DOWN
 
     def name(self):
         return self.__obj.name

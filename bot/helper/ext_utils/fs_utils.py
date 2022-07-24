@@ -7,7 +7,7 @@ from magic import Magic
 from subprocess import run as srun, check_output
 from time import time
 from math import ceil
-
+from re import split as re_split, I
 from .exceptions import NotSupportedExtractionArchive
 from bot import aria2, LOGGER, DOWNLOAD_DIR, get_client, TG_SPLIT_SIZE, EQUAL_SPLITS, STORAGE_THRESHOLD
 

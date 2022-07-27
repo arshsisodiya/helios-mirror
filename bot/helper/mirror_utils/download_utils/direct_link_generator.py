@@ -14,19 +14,17 @@ from base64 import b64decode
 from urllib.parse import urlparse, unquote
 from json import loads as jsnloads
 from lk21 import Bypass
+from lxml import etree
 from cfscrape import create_scraper
 from bs4 import BeautifulSoup
 from base64 import standard_b64encode
-from lxml import etree
-
 from bot import LOGGER, UPTOBOX_TOKEN, CRYPT, APPDRIVE_EMAIL, APPDRIVE_PASS
 from bot.helper.telegram_helper.bot_commands import BotCommands
-from bot.helper.ext_utils.bot_utils import is_gdtot_link
+from bot.helper.ext_utils.bot_utils import is_gdtot_link, is_appdrive_link
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 
 fmed_list = ['fembed.net', 'fembed.com', 'femax20.com', 'fcdn.stream', 'feurl.com', 'layarkacaxxi.icu',
              'naniplay.nanime.in', 'naniplay.nanime.biz', 'naniplay.com', 'mm9842.com']
-
 
 def direct_link_generator(link: str):
     """ direct links generator """
@@ -70,17 +68,34 @@ def direct_link_generator(link: str):
         return krakenfiles(link)
     elif is_gdtot_link(link):
         return gdtot(link)
+    elif is_appdrive_link(link):
+        return appdrive(link)
     elif any(x in link for x in fmed_list):
         return fembed(link)
     elif any(x in link for x in ['sbembed.com', 'watchsb.com', 'streamsb.net', 'sbplay.org']):
         return sbembed(link)
+    elif 'gofile.io' in link:
+        return gofile(link)
     else:
         raise DirectDownloadLinkException(f'No Direct link function found for {link}')
 
 def zippy_share(url: str) -> str:
-    """ ZippyShare direct link generator
-    Based on https://github.com/zevtyardt/lk21 """
-    return Bypass().bypass_zippyshare(url)
+    try:
+        link = re_findall(r'\b(https?://.*zippyshare\.com\S+)', url)[0]
+    except IndexError:
+        raise DirectDownloadLinkException("ERROR: No Zippyshare links found")
+    try:
+        base_url = re_search('http.+.zippyshare.com/', link).group()
+        response = rget(link).content
+        pages = BeautifulSoup(response, "lxml")
+        js_script = pages.find("div", style="margin-left: 24px; margin-top: 20px; text-align: center; width: 303px; height: 105px;")
+        js_content = re_findall(r'\.href.=."/(.*?)";', str(js_script))[0]
+        js_content = str(js_content).split('"')
+        a = str(js_script).split('var a = ')[1].split(';')[0]
+        value = int(a) ** 3 + 3
+        return base_url + js_content[0] + str(value) + js_content[2]
+    except IndexError:
+        raise DirectDownloadLinkException("ERROR: Can't find download button")
 
 def yandex_disk(url: str) -> str:
     """ Yandex.Disk direct link generator
@@ -111,7 +126,8 @@ def uptobox(url: str) -> str:
             dl_url = link
         except:
             file_id = re_findall(r'\bhttps?://.*uptobox\.com/(\w+)', url)[0]
-            file_link = 'https://uptobox.com/api/link?token=%s&file_code=%s' % (UPTOBOX_TOKEN, file_id)
+            file_link = f'https://uptobox.com/api/link?token={UPTOBOX_TOKEN}&file_code={file_id}'
+
             req = rget(file_link)
             result = req.json()
             dl_url = result['data']['dlLink']
@@ -206,8 +222,7 @@ def onedrive(link: str) -> str:
     resp = rhead(direct_link1)
     if resp.status_code != 302:
         raise DirectDownloadLinkException("ERROR: Unauthorized link, the link may be private")
-    dl_link = resp.next.url
-    return dl_link
+    return resp.next.url
 
 def pixeldrain(url: str) -> str:
     """ Based on https://github.com/yash-dk/TorToolkit-Telegram """
@@ -223,7 +238,9 @@ def pixeldrain(url: str) -> str:
     if resp["success"]:
         return dl_link
     else:
-        raise DirectDownloadLinkException("ERROR: Cant't download due {}.".format(resp["message"]))
+        raise DirectDownloadLinkException(
+            f"""ERROR: Cant't download due {resp["message"]}."""
+        )
 
 def antfiles(url: str) -> str:
     """ Antfiles direct link generator
@@ -289,11 +306,12 @@ def fichier(link: str) -> str:
     elif len(soup.find_all("div", {"class": "ct_warn"})) == 2:
         str_2 = soup.find_all("div", {"class": "ct_warn"})[-1]
         if "you must wait" in str(str_2).lower():
-            numbers = [int(word) for word in str(str_2).split() if word.isdigit()]
-            if not numbers:
-                raise DirectDownloadLinkException("ERROR: 1fichier is on a limit. Please wait a few minutes/hour.")
-            else:
+            if numbers := [
+                int(word) for word in str(str_2).split() if word.isdigit()
+            ]:
                 raise DirectDownloadLinkException(f"ERROR: 1fichier is on a limit. Please wait {numbers[0]} minute.")
+            else:
+                raise DirectDownloadLinkException("ERROR: 1fichier is on a limit. Please wait a few minutes/hour.")
         elif "protect access" in str(str_2).lower():
           raise DirectDownloadLinkException(f"ERROR: This link requires a password!\n\n<b>This link requires a password!</b>\n- Insert sign <b>::</b> after the link and write the password after the sign.\n\n<b>Example:</b>\n<code>/{BotCommands.MirrorCommand} https://1fichier.com/?smmtd8twfpm66awbqz04::love you</code>\n\n* No spaces between the signs <b>::</b>\n* For the password, you can use a space!")
         else:
@@ -302,11 +320,12 @@ def fichier(link: str) -> str:
         str_1 = soup.find_all("div", {"class": "ct_warn"})[-2]
         str_3 = soup.find_all("div", {"class": "ct_warn"})[-1]
         if "you must wait" in str(str_1).lower():
-            numbers = [int(word) for word in str(str_1).split() if word.isdigit()]
-            if not numbers:
-                raise DirectDownloadLinkException("ERROR: 1fichier is on a limit. Please wait a few minutes/hour.")
-            else:
+            if numbers := [
+                int(word) for word in str(str_1).split() if word.isdigit()
+            ]:
                 raise DirectDownloadLinkException(f"ERROR: 1fichier is on a limit. Please wait {numbers[0]} minute.")
+            else:
+                raise DirectDownloadLinkException("ERROR: 1fichier is on a limit. Please wait a few minutes/hour.")
         elif "bad password" in str(str_3).lower():
           raise DirectDownloadLinkException("ERROR: The password you entered is wrong!")
         else:
@@ -384,17 +403,35 @@ def gdtot(url: str) -> str:
         raise DirectDownloadLinkException("ERROR: Try in your broswer, mostly file not found or user limit exceeded!")
     return f'https://drive.google.com/open?id={decoded_id}'
 
+def gofile(url: str) -> str:
+    try:
+        api_uri = 'https://api.gofile.io'
+        client = rsession()
+        res = client.get(f'{api_uri}/createAccount').json()
+        data = {
+            'contentId': url.split('/')[-1],
+            'token': res['data']['token'],
+            'websiteToken': 'websiteToken',
+            'cache': 'true'
+        }
+        res = client.get(f'{api_uri}/getContent', params=data).json()
+        content = list(res['data']['contents'].values())
+        return content[0]['directLink']
+    except:
+        raise DirectDownloadLinkException("ERROR: Error trying to generate Direct Link from gofile!")
+    return f'https://drive.google.com/open?id={decoded_id}'
+
 account = {
     'email': APPDRIVE_EMAIL,
     'passwd': APPDRIVE_PASS
     }
+
 def account_login(client, url, email, password):
     """ AppDrive google drive link generator
     By https://github.com/xcscxr """
 
     if APPDRIVE_EMAIL is None:
         raise DirectDownloadLinkException("ERROR: Appdrive  Email Password not provided")
-
     data = {
         'email': email,
         'password': password
@@ -422,29 +459,38 @@ def appdrive(url: str) -> str:
     client.headers.update({
         "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
     })
+
     account_login(client, url, account['email'], account['passwd'])
+
     res = client.get(url)
     key = re_findall(r'"key",\s+"(.*?)"', res.text)[0]
+
     ddl_btn = etree.HTML(res.content).xpath("//button[@id='drc']")
+
     info_parsed = parse_info(res.text)
     info_parsed['error'] = False
-    info_parsed['link_type'] = 'login'  # direct/login
+    info_parsed['link_type'] = 'login' # direct/login
+
     headers = {
         "Content-Type": f"multipart/form-data; boundary={'-'*4}_",
     }
+
     data = {
         'type': 1,
         'key': key,
         'action': 'original'
     }
+
     if len(ddl_btn):
         info_parsed['link_type'] = 'direct'
         data['action'] = 'direct'
+
     while data['type'] <= 3:
         try:
             response = client.post(url, data=gen_payload(data), headers=headers).json()
             break
         except: data['type'] += 1
+
     if 'url' in response:
         info_parsed['gdrive_link'] = response['url']
     elif 'error' in response and response['error']:

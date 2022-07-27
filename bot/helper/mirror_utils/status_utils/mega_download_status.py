@@ -1,10 +1,8 @@
-from bot.helper.ext_utils.bot_utils import get_readable_file_size, MirrorStatus, EngineStatus, get_readable_time
-from bot import DOWNLOAD_DIR
+from bot.helper.ext_utils.bot_utils import get_readable_file_size, MirrorStatus, get_readable_time, EngineStatus
 
 class MegaDownloadStatus:
 
     def __init__(self, obj, listener):
-        self.__uid = obj.uid
         self.__listener = listener
         self.__obj = obj
         self.message = listener.message
@@ -15,7 +13,7 @@ class MegaDownloadStatus:
     def progress_raw(self):
         try:
             return round(self.processed_bytes() / self.__obj.size * 100,2)
-        except ZeroDivisionError:
+        except:
             return 0.0
 
     def progress(self):
@@ -24,9 +22,6 @@ class MegaDownloadStatus:
 
     def status(self) -> str:
         return MirrorStatus.STATUS_DOWNLOADING
-
-    def eng(self):
-        return EngineStatus.STATUS_MEGA
 
     def processed_bytes(self):
         return self.__obj.downloaded_bytes
@@ -56,8 +51,8 @@ class MegaDownloadStatus:
     def gid(self) -> str:
         return self.__obj.gid
 
-    def path(self) -> str:
-        return f"{DOWNLOAD_DIR}{self.__uid}"
-
     def download(self):
         return self.__obj
+
+    def eng(self):
+        return EngineStatus.STATUS_MEGA

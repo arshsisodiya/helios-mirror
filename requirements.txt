@@ -14,7 +14,6 @@ google-auth-oauthlib
 gunicorn
 lk21
 lxml
-megasdkrestclient
 pillow
 psutil
 psycopg2-binary
@@ -30,4 +29,3 @@ tenacity
 tgCrypto
 urllib3
 yt-dlp
-heroku3

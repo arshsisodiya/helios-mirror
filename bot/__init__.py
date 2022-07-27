@@ -7,14 +7,13 @@ from aria2p import API as ariaAPI, Client as ariaClient
 from os import remove as osremove, path as ospath, environ
 from requests import get as rget
 from json import loads as jsnloads
-from subprocess import Popen, run as srun, check_output
+from subprocess import Popen, run as srun
 from time import sleep, time
 from threading import Thread, Lock
 from dotenv import load_dotenv
 from pyrogram import Client, enums
 from asyncio import get_event_loop
-from megasdkrestclient import MegaSdkRestClient
-from megasdkrestclient import errors as mega_err
+
 main_loop = get_event_loop()
 
 faulthandler_enable()
@@ -49,6 +48,7 @@ try:
         log_error(f"NETRC_URL: {e}")
 except:
     pass
+
 try:
     SERVER_PORT = getConfig('SERVER_PORT')
     if len(SERVER_PORT) == 0:
@@ -56,15 +56,15 @@ try:
 except:
     SERVER_PORT = 80
 
-PORT = environ.get('PORT', SERVER_PORT)
-Popen([f"gunicorn web.wserver:app --bind 0.0.0.0:{PORT}"], shell=True)
+Popen(f"gunicorn web.wserver:app --bind 0.0.0.0:{SERVER_PORT}", shell=True)
 srun(["qbittorrent-nox", "-d", "--profile=."])
 if not ospath.exists('.netrc'):
     srun(["touch", ".netrc"])
 srun(["cp", ".netrc", "/root/.netrc"])
 srun(["chmod", "600", ".netrc"])
 srun(["chmod", "+x", "aria.sh"])
-srun(["./aria.sh"], shell=True)
+srun("./aria.sh", shell=True)
+sleep(0.5)
 
 Interval = []
 DRIVES_NAMES = []
@@ -108,29 +108,29 @@ AUTHORIZED_CHATS = set()
 SUDO_USERS = set()
 AS_DOC_USERS = set()
 AS_MEDIA_USERS = set()
-EXTENTION_FILTER = set(['.torrent'])
+EXTENSION_FILTER = {'.torrent'}
 LEECH_LOG = set()
 MIRROR_LOGS = set()
 try:
     aid = getConfig('AUTHORIZED_CHATS')
-    aid = aid.split(' ')
+    aid = aid.split()
     for _id in aid:
-        AUTHORIZED_CHATS.add(int(_id))
+        AUTHORIZED_CHATS.add(int(_id.strip()))
 except:
     pass
 try:
     aid = getConfig('SUDO_USERS')
-    aid = aid.split(' ')
+    aid = aid.split()
     for _id in aid:
-        SUDO_USERS.add(int(_id))
+        SUDO_USERS.add(int(_id.strip()))
 except:
     pass
 try:
-    fx = getConfig('EXTENTION_FILTER')
+    fx = getConfig('EXTENSION_FILTER')
     if len(fx) > 0:
-        fx = fx.split(' ')
+        fx = fx.split()
         for x in fx:
-            EXTENTION_FILTER.add(x.lower())
+            EXTENSION_FILTER.add(x.lower())
 except:
     pass
 try:
@@ -152,37 +152,23 @@ try:
     parent_id = getConfig('GDRIVE_FOLDER_ID')
     DOWNLOAD_DIR = getConfig('DOWNLOAD_DIR')
     if not DOWNLOAD_DIR.endswith("/"):
-        DOWNLOAD_DIR = DOWNLOAD_DIR + '/'
+        DOWNLOAD_DIR = f'{DOWNLOAD_DIR}/'
     DOWNLOAD_STATUS_UPDATE_INTERVAL = int(getConfig('DOWNLOAD_STATUS_UPDATE_INTERVAL'))
     OWNER_ID = int(getConfig('OWNER_ID'))
     AUTO_DELETE_MESSAGE_DURATION = int(getConfig('AUTO_DELETE_MESSAGE_DURATION'))
     TELEGRAM_API = getConfig('TELEGRAM_API')
     TELEGRAM_HASH = getConfig('TELEGRAM_HASH')
 except:
-    LOGGER.error("One or more env variables missing! Exiting now")
+    log_error("One or more env variables missing! Exiting now")
     exit(1)
-try:
-    AUTO_DELETE_UPLOAD_MESSAGE_DURATION = int(getConfig('AUTO_DELETE_UPLOAD_MESSAGE_DURATION'))
-except KeyError as e:
-    AUTO_DELETE_UPLOAD_MESSAGE_DURATION = -1
-    LOGGER.warning("AUTO_DELETE_UPLOAD_MESSAGE_DURATION var missing!")
-    pass
+
 LOGGER.info("Generating BOT_SESSION_STRING")
 app = Client(name='pyrogram', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, bot_token=BOT_TOKEN, parse_mode=enums.ParseMode.HTML, no_updates=True)
-
-try:
-    USER_SESSION_STRING = getConfig('USER_SESSION_STRING')
-    if len(USER_SESSION_STRING) == 0:
-        raise KeyError
-    rss_session = Client(name='rss_session', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, session_string=USER_SESSION_STRING, parse_mode=enums.ParseMode.HTML, no_updates=True)
-except:
-    USER_SESSION_STRING = None
-    rss_session = None
 
 def aria2c_init():
     try:
         log_info("Initializing Aria2c")
-        link = "https://releases.ubuntu.com/21.10/ubuntu-21.10-desktop-amd64.iso.torrent"
+        link = "https://linuxmint.com/torrents/lmde-5-cinnamon-64bit.iso.torrent"
         dire = DOWNLOAD_DIR.rstrip("/")
         aria2.add_uris([link], {'dir': dire})
         sleep(3)
@@ -196,42 +182,19 @@ Thread(target=aria2c_init).start()
 sleep(1.5)
 
 try:
-    MEGAREST = getConfig('MEGAREST')
-    MEGAREST = MEGAREST.lower() == 'true'
-except KeyError:
-    MEGAREST = False
-try:
-    MEGA_API_KEY = getConfig("MEGA_API_KEY")
-except KeyError:
+    MEGA_API_KEY = getConfig('MEGA_API_KEY')
+    if len(MEGA_API_KEY) == 0:
+        raise KeyError
+except:
+    log_warning('MEGA API KEY not provided!')
     MEGA_API_KEY = None
-    LOGGER.info("MEGA API KEY NOT AVAILABLE")
-if MEGAREST is True:
-    # Start megasdkrest binary
-    Popen(["megasdkrest", "--apikey", MEGA_API_KEY])
-    sleep(3)  # Wait for the mega server to start listening
-    mega_client = MegaSdkRestClient("http://localhost:6090")
-    try:
-        MEGA_EMAIL_ID = getConfig("MEGA_EMAIL_ID")
-        MEGA_PASSWORD = getConfig("MEGA_PASSWORD")
-        if len(MEGA_EMAIL_ID) > 0 and len(MEGA_PASSWORD) > 0:
-            try:
-                mega_client.login(MEGA_EMAIL_ID, MEGA_PASSWORD)
-            except mega_err.MegaSdkRestClientException as e:
-                logging.error(e.message["message"])
-                exit(0)
-        else:
-            LOGGER.info(
-                "Mega API KEY provided but credentials not provided. Starting mega in anonymous mode!"
-            )
-            MEGA_EMAIL_ID = None
-            MEGA_PASSWORD = None
-    except KeyError:
-        LOGGER.info(
-            "Mega API KEY provided but credentials not provided. Starting mega in anonymous mode!"
-        )
-        MEGA_EMAIL_ID = None
-        MEGA_PASSWORD = None
-else:
+try:
+    MEGA_EMAIL_ID = getConfig('MEGA_EMAIL_ID')
+    MEGA_PASSWORD = getConfig('MEGA_PASSWORD')
+    if len(MEGA_EMAIL_ID) == 0 or len(MEGA_PASSWORD) == 0:
+        raise KeyError
+except:
+    log_warning('MEGA Credentials not provided!')
     MEGA_EMAIL_ID = None
     MEGA_PASSWORD = None
 try:
@@ -241,12 +204,54 @@ try:
 except:
     DB_URI = None
 try:
+    RSS_USER_SESSION_STRING = getConfig('RSS_USER_SESSION_STRING')
+    if len(RSS_USER_SESSION_STRING) == 0:
+        raise KeyError
+    rss_session = Client(name='rss_session', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, session_string=RSS_USER_SESSION_STRING, parse_mode=enums.ParseMode.HTML, no_updates=True)
+except:
+    USER_SESSION_STRING = None
+    rss_session = None
+try:
+    RSS_CHAT_ID = getConfig('RSS_CHAT_ID')
+    if len(RSS_CHAT_ID) == 0:
+        raise KeyError
+    RSS_CHAT_ID = int(RSS_CHAT_ID)
+except:
+    RSS_CHAT_ID = None
+tgBotMaxFileSize = 2097151000
+try:
     TG_SPLIT_SIZE = getConfig('TG_SPLIT_SIZE')
-    if len(TG_SPLIT_SIZE) == 0 or int(TG_SPLIT_SIZE) > 2097151000:
+    if len(TG_SPLIT_SIZE) == 0 or int(TG_SPLIT_SIZE) > tgBotMaxFileSize:
         raise KeyError
     TG_SPLIT_SIZE = int(TG_SPLIT_SIZE)
 except:
-    TG_SPLIT_SIZE = 2097151000
+    TG_SPLIT_SIZE = tgBotMaxFileSize
+try:
+    USER_SESSION_STRING = getConfig('USER_SESSION_STRING')
+    if len(USER_SESSION_STRING) == 0:
+        raise KeyError
+    premium_session = Client(name='premium_session', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, session_string=USER_SESSION_STRING, parse_mode=enums.ParseMode.HTML, no_updates=True)
+    if not premium_session:
+        LOGGER.error("Cannot initialized User Session. Please regenerate USER_SESSION_STRING")
+    else:
+        premium_session.start()
+        if (premium_session.get_me()).is_premium:
+            if not LEECH_LOG:
+                LOGGER.error("You must set LEECH_LOG for uploads. Eiting now.")
+                try: premium_session.send_message(OWNER_ID, "You must set LEECH_LOG for uploads, Exiting Now...")
+                except Exception as e: LOGGER.exception(e)
+                premium_session.stop()
+                app.stop()
+                exit(1)
+            TG_SPLIT_SIZE = 4194304000
+            LOGGER.info("Telegram Premium detected! Leech limit is 4GB now.")
+        elif (not DB_URI) or (not RSS_CHAT_ID):
+            premium_session.stop()
+            LOGGER.info(f"Not using rss. if you want to use fill RSS_CHAT_ID and DB_URI variables.")
+except:
+    USER_SESSION_STRING = None
+    premium_session = None
+LOGGER.info(f"TG_SPLIT_SIZE: {TG_SPLIT_SIZE}")
 try:
     STATUS_LIMIT = getConfig('STATUS_LIMIT')
     if len(STATUS_LIMIT) == 0:
@@ -329,12 +334,12 @@ try:
 except:
     ZIP_UNZIP_LIMIT = None
 try:
-    RSS_CHAT_ID = getConfig('RSS_CHAT_ID')
-    if len(RSS_CHAT_ID) == 0:
+    LEECH_LIMIT = getConfig('LEECH_LIMIT')
+    if len(LEECH_LIMIT) == 0:
         raise KeyError
-    RSS_CHAT_ID = int(RSS_CHAT_ID)
+    LEECH_LIMIT = float(LEECH_LIMIT)
 except:
-    RSS_CHAT_ID = None
+    LEECH_LIMIT = None
 try:
     RSS_DELAY = getConfig('RSS_DELAY')
     if len(RSS_DELAY) == 0:
@@ -451,43 +456,6 @@ try:
 except:
     CRYPT = None
 try:
-    AUTHOR_NAME = getConfig('AUTHOR_NAME')
-    if len(AUTHOR_NAME) == 0:
-        AUTHOR_NAME = 'Arsh Sisodiya'
-except KeyError:
-    AUTHOR_NAME = 'Arsh Sisodiya'
-
-try:
-    AUTHOR_URL = getConfig('AUTHOR_URL')
-    if len(AUTHOR_URL) == 0:
-        AUTHOR_URL = 'https://t.me/heliosmirror'
-except KeyError:
-    AUTHOR_URL = 'https://t.me/heliosmirror'
-
-try:
-    GD_INFO = getConfig('GD_INFO')
-    if len(GD_INFO) == 0:
-        GD_INFO = 'Uploaded by Helios Mirror Bot'
-except KeyError:
-    GD_INFO = 'Uploaded by Helios Mirror Bot'
-
-try:
-    TITLE_NAME = getConfig('TITLE_NAME')
-    if len(TITLE_NAME) == 0:
-        TITLE_NAME = 'Helios-Mirror-Search'
-except KeyError:
-    TITLE_NAME = 'Helios-Mirror-Search'
-try:
-    SOURCE_LINK = getConfig('SOURCE_LINK')
-    SOURCE_LINK = SOURCE_LINK.lower() == 'true'
-except KeyError:
-    SOURCE_LINK = False
-try:
-    BOT_PM = getConfig('BOT_PM')
-    BOT_PM = BOT_PM.lower() == 'true'
-except KeyError:
-    BOT_PM = False
-try:
     APPDRIVE_EMAIL = getConfig('APPDRIVE_EMAIL')
     APPDRIVE_PASS = getConfig('APPDRIVE_PASS')
     if len(APPDRIVE_EMAIL) == 0 or len(APPDRIVE_PASS) == 0:
@@ -495,7 +463,43 @@ try:
 except KeyError:
     APPDRIVE_EMAIL = None
     APPDRIVE_PASS = None
-
+try:
+    BOT_PM = getConfig('BOT_PM')
+    BOT_PM = BOT_PM.lower() == 'true'
+except KeyError:
+    BOT_PM = False
+try:
+    FSUB = getConfig('FSUB')
+    FSUB = FSUB.lower() == 'true'
+except:
+    FSUB = False
+    LOGGER.info("Force Subscribe is disabled")
+try:
+    CHANNEL_USERNAME = getConfig("CHANNEL_USERNAME")
+    if len(CHANNEL_USERNAME) == 0:
+        raise KeyError
+except KeyError:
+    log_info("CHANNEL_USERNAME not provided! Using default @woodcraft_repo")
+    CHANNEL_USERNAME = "woodcraft_repo"
+try:
+    FSUB_CHANNEL_ID = getConfig("FSUB_CHANNEL_ID")
+    if len(FSUB_CHANNEL_ID) == 0:
+        raise KeyError
+    FSUB_CHANNEL_ID = int(FSUB_CHANNEL_ID)
+except KeyError:
+    log_info("CHANNEL_ID not provided! Using default id of @woodcraft_repo")
+    FSUB_CHANNEL_ID = -1001115426030
+try:
+    BOT_PM = getConfig('BOT_PM')
+    BOT_PM = BOT_PM.lower() == 'true'
+except KeyError:
+    BOT_PM = False
+try:
+    TITLE_NAME = getConfig('TITLE_NAME')
+    if len(TITLE_NAME) == 0:
+        TITLE_NAME = 'Woodcraft-Repo'
+except KeyError:
+    TITLE_NAME = 'Woodcraft-Repo'
 try:
     TOKEN_PICKLE_URL = getConfig('TOKEN_PICKLE_URL')
     if len(TOKEN_PICKLE_URL) == 0:

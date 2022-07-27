@@ -1,4 +1,4 @@
-FROM arshsisodiya/helioskirepo:public
+FROM woodcraftbot/mltb:latest
 
 WORKDIR /usr/src/app
 RUN chmod 777 /usr/src/app

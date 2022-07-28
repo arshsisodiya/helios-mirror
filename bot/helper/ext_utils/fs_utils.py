@@ -9,7 +9,7 @@ from time import time
 from math import ceil
 from re import split as re_split, I
 from .exceptions import NotSupportedExtractionArchive
-from bot import aria2, LOGGER, DOWNLOAD_DIR, get_client, TG_SPLIT_SIZE, EQUAL_SPLITS, STORAGE_THRESHOLD
+from bot import aria2, LOGGER, DOWNLOAD_DIR, get_client, MAX_LEECH_SIZE, EQUAL_SPLITS, STORAGE_THRESHOLD
 
 VIDEO_SUFFIXES = ("M4V", "MP4", "MOV", "FLV", "WMV", "3GP", "MPG", "WEBM", "MKV", "AVI")
 ARCH_EXT = [".tar.bz2", ".tar.gz", ".bz2", ".gz", ".tar.xz", ".tar", ".tbz2", ".tgz", ".lzma2",
@@ -121,7 +121,7 @@ def take_ss(video_file):
     return des_dir
 
 def split_file(path, size, file_, dirpath, split_size, start_time=0, i=1, inLoop=False):
-    parts = ceil(size/TG_SPLIT_SIZE)
+    parts = ceil(size/MAX_LEECH_SIZE)
     if EQUAL_SPLITS and not inLoop:
         split_size = ceil(size/parts) + 1000
     if file_.upper().endswith(VIDEO_SUFFIXES):

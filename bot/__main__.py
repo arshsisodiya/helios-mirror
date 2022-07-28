@@ -7,7 +7,7 @@ from sys import executable
 from telegram import InlineKeyboardMarkup
 from telegram.ext import CommandHandler
 
-from bot import bot, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, LOGGER, Interval, INCOMPLETE_TASK_NOTIFIER, DB_URI, alive, app, main_loop, HEROKU_API_KEY, HEROKU_APP_NAME
+from bot import bot, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, LOGGER, Interval, INCOMPLETE_TASK_NOTIFIER, DB_URI, alive, app, main_loop, HEROKU_API_KEY, HEROKU_APP_NAME, USER_SESSION_STRING, app_session
 from .helper.ext_utils.fs_utils import start_cleanup, clean_all, exit_clean_up
 from .helper.ext_utils.telegraph_helper import telegraph
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
@@ -259,5 +259,10 @@ def main():
 
 main()
 app.start()
+
+if USER_SESSION_STRING:
+    app_session.run()
+else:
+    pass
 
 main_loop.run_forever()

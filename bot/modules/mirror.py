@@ -12,7 +12,7 @@ from telegram.ext import CommandHandler
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton, ParseMode
 from bot import bot, Interval, INDEX_URL, BUTTON_FOUR_NAME, BUTTON_FOUR_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL, \
                 BUTTON_SIX_NAME, BUTTON_SIX_URL, VIEW_LINK, aria2, dispatcher, DOWNLOAD_DIR, \
-                download_dict, download_dict_lock, TG_SPLIT_SIZE, LOGGER, DB_URI, INCOMPLETE_TASK_NOTIFIER, \
+                download_dict, download_dict_lock, MAX_LEECH_SIZE, LOGGER, DB_URI, INCOMPLETE_TASK_NOTIFIER, \
                 LEECH_LOG, SOURCE_LINK, BOT_PM, MIRROR_LOGS, AUTO_DELETE_UPLOAD_MESSAGE_DURATION, MEGA_API_KEY
 from bot.helper.ext_utils.bot_utils import is_url, is_magnet, is_gdtot_link, is_mega_link, is_gdrive_link, get_content_type
 from bot.helper.ext_utils.fs_utils import get_base_name, get_path_size, split_file, clean_download
@@ -83,12 +83,12 @@ class MirrorListener:
                 path = m_path + ".zip"
                 LOGGER.info(f'Zip: orig_path: {m_path}, zip_path: {path}')
                 if self.pswd is not None:
-                    if self.isLeech and int(size) > TG_SPLIT_SIZE:
-                        srun(["7z", f"-v{TG_SPLIT_SIZE}b", "a", "-mx=0", f"-p{self.pswd}", path, m_path])
+                    if self.isLeech and int(size) > MAX_LEECH_SIZE:
+                        srun(["7z", f"-v{MAX_LEECH_SIZE}b", "a", "-mx=0", f"-p{self.pswd}", path, m_path])
                     else:
                         srun(["7z", "a", "-mx=0", f"-p{self.pswd}", path, m_path])
-                elif self.isLeech and int(size) > TG_SPLIT_SIZE:
-                    srun(["7z", f"-v{TG_SPLIT_SIZE}b", "a", "-mx=0", path, m_path])
+                elif self.isLeech and int(size) > MAX_LEECH_SIZE:
+                    srun(["7z", f"-v{MAX_LEECH_SIZE}b", "a", "-mx=0", path, m_path])
                 else:
                     srun(["7z", "a", "-mx=0", path, m_path])
             except FileNotFoundError:
@@ -148,13 +148,13 @@ class MirrorListener:
                 for file_ in files:
                     f_path = ospath.join(dirpath, file_)
                     f_size = ospath.getsize(f_path)
-                    if int(f_size) > TG_SPLIT_SIZE:
+                    if int(f_size) > MAX_LEECH_SIZE:
                         if not checked:
                             checked = True
                             with download_dict_lock:
                                 download_dict[self.uid] = SplitStatus(up_name, up_path, size)
                             LOGGER.info(f"Splitting: {up_name}")
-                        split_file(f_path, f_size, file_, dirpath, TG_SPLIT_SIZE)
+                        split_file(f_path, f_size, file_, dirpath, MAX_LEECH_SIZE)
                         osremove(f_path)
         if self.isLeech:
             size = get_path_size(f'{DOWNLOAD_DIR}{self.uid}')
@@ -407,6 +407,10 @@ def _mirror(bot, message, isZip=False, extract=False, isQbit=False, isLeech=Fals
             message = sendMarkup(startwarn, bot, message, InlineKeyboardMarkup(buttons.build_menu(2)))
             Thread(target=auto_delete_message, args=(bot, message, message)).start()
             return
+    if message.chat.type == 'private' and len(LEECH_LOG) == 0 and isLeech and MAX_LEECH_SIZE == 4194304000:
+        text = f"Leech Log is Empty you Can't use bot in PM,\nYou Can use <i>/{BotCommands.AddleechlogCommand} chat_id </i> to add leech log."
+        sendMessage(text, bot, message)
+        return
     mesg = message.text.split('\n')
     message_args = mesg[0].split(' ', maxsplit=1)
     name_args = mesg[0].split('|', maxsplit=1)

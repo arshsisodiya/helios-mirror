@@ -12,9 +12,9 @@ from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot import download_dict, download_dict_lock, STATUS_LIMIT, botStartTime, DOWNLOAD_DIR, dispatcher
 from bot.helper.telegram_helper.button_build import ButtonMaker
 
-MAGNET_REGEX = r"magnet:\?xt=urn:btih:[a-zA-Z0-9]*"
+🧲MAGNET_REGEX = r"magnet:\?xt=urn:btih:[a-zA-Z0-9]*"
 
-URL_REGEX = r"(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+"
+🗞️URL_REGEX = r"(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+"
 
 COUNT = 0
 PAGE_NO = 1
@@ -184,16 +184,16 @@ def get_readable_message():
                     upspeed_bytes += float(spd.split('K')[0]) * 1024
                 elif 'MB/s' in spd:
                     upspeed_bytes += float(spd.split('M')[0]) * 1048576
-        bmsg += f"\n<b>DL:</b> {get_readable_file_size(dlspeed_bytes)}/s | <b>UL:</b> {get_readable_file_size(upspeed_bytes)}/s"
+        bmsg += f"\n<b>⬇️DL:</b> {get_readable_file_size(dlspeed_bytes)}/s | <b>⬆️UL:</b> {get_readable_file_size(upspeed_bytes)}/s"
         buttons = ButtonMaker()
         buttons.sbutton("Statistics", str(FOUR))
         sbutton = InlineKeyboardMarkup(buttons.build_menu(1))
         if STATUS_LIMIT is not None and tasks > STATUS_LIMIT:
             buttons = ButtonMaker()
-            buttons.sbutton("Previous", "status pre")
+            buttons.sbutton("◀️Previous", "status pre")
             buttons.sbutton(f"{PAGE_NO}/{pages}", str(THREE))
-            buttons.sbutton("Next", "status nex")
-            buttons.sbutton("Statistics", str(FOUR))
+            buttons.sbutton("Next▶️", "status nex")
+            buttons.sbutton("📊Statistics", str(FOUR))
             button = InlineKeyboardMarkup(buttons.build_menu(3))
             return msg + bmsg, button
         return msg + bmsg, sbutton

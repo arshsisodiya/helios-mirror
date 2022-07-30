@@ -57,8 +57,8 @@ def stats(update, context):
 
 def start(update, context):
     buttons = ButtonMaker()
-    buttons.buildbutton("Join Channel", "https://t.me/+Dq-Eov8vIj00OTk1")
-    buttons.buildbutton("Support Group", "https://t.me/stmirrorleechbot")
+    buttons.buildbutton("⚔️Join Channel⚔️", "https://t.me/+Dq-Eov8vIj00OTk1")
+    buttons.buildbutton("🧑‍💻Mirror Group", "https://t.me/stmirrorleechbot")
     reply_markup = InlineKeyboardMarkup(buttons.build_menu(2))
     if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(update):
         start_string = f'''

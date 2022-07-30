@@ -12,9 +12,9 @@ from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot import download_dict, download_dict_lock, STATUS_LIMIT, botStartTime, DOWNLOAD_DIR, dispatcher
 from bot.helper.telegram_helper.button_build import ButtonMaker
 
-🧲MAGNET_REGEX = r"magnet:\?xt=urn:btih:[a-zA-Z0-9]*"
+MAGNET_REGEX = r"magnet:\?xt=urn:btih:[a-zA-Z0-9]*"
 
-🗞️URL_REGEX = r"(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+"
+URL_REGEX = r"(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+"
 
 COUNT = 0
 PAGE_NO = 1

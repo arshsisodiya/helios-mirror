@@ -158,7 +158,7 @@ def get_readable_message():
                 if download.message.chat.type != 'private':
                     try:
                         chatid = str(download.message.chat.id)[4:]
-                        msg += f'\n<b>🌪️Source: </b><a href="https://t.me/c/{chatid}/{download.message.message_id}">{download.message.from_user.first_name}</a> | <b>Id :</b> <code>{download.message.from_user.id}</code>'
+                        msg += f'\n<b>🌪️Source: </b><a href="https://t.me/c/{chatid}/{download.message.message_id}">{download.message.from_user.first_name}</a> | <b>📇Id :</b> <code>{download.message.from_user.id}</code>'
                     except:
                         pass
                 else:
@@ -186,7 +186,7 @@ def get_readable_message():
                     upspeed_bytes += float(spd.split('M')[0]) * 1048576
         bmsg += f"\n<b>⬇️DL:</b> {get_readable_file_size(dlspeed_bytes)}/s | <b>⬆️UL:</b> {get_readable_file_size(upspeed_bytes)}/s"
         buttons = ButtonMaker()
-        buttons.sbutton("Statistics", str(FOUR))
+        buttons.sbutton("📉Statistics", str(FOUR))
         sbutton = InlineKeyboardMarkup(buttons.build_menu(1))
         if STATUS_LIMIT is not None and tasks > STATUS_LIMIT:
             buttons = ButtonMaker()

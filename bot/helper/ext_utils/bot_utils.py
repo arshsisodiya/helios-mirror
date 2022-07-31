@@ -112,7 +112,7 @@ def get_progress_bar_string(status):
     total = status.size_raw() / 8
     p = 0 if total == 0 else round(completed * 100 / total)
     p = min(max(p, 0), 100)
-    cFull = p // 8
+    cFull = p // 1
     p_str = '🅸 🅻🅾🆅🅴 🆄' * cFull
     p_str += '' * (1 - cFull)
     p_str = f"[{p_str}]"

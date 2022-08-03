@@ -1,11 +1,12 @@
-from bot.helper.ext_utils.bot_utils import MirrorStatus, get_readable_file_size, get_readable_time, EngineStatus
+from bot.helper.ext_utils.bot_utils import MirrorStatus, get_readable_file_size, get_readable_time
+
 
 class CloneStatus:
     def __init__(self, obj, size, message, gid):
         self.__obj = obj
         self.__size = size
-        self.__gid = gid
         self.message = message
+        self.__gid = gid
 
     def processed_bytes(self):
         return self.__obj.transferred_size
@@ -28,7 +29,7 @@ class CloneStatus:
     def progress_raw(self):
         try:
             return self.__obj.transferred_size / self.__size * 100
-        except:
+        except ZeroDivisionError:
             return 0
 
     def progress(self):
@@ -47,11 +48,8 @@ class CloneStatus:
         try:
             seconds = (self.__size - self.__obj.transferred_size) / self.speed_raw()
             return f'{get_readable_time(seconds)}'
-        except:
+        except ZeroDivisionError:
             return '-'
 
     def download(self):
         return self.__obj
-
-    def eng(self):
-        return EngineStatus.STATUS_GD

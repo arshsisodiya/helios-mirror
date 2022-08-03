@@ -26,24 +26,15 @@ def _create_accounts(service, project, count):
     batch = service.new_batch_http_request(callback=_def_batch_resp)
     for _ in range(count):
         aid = _generate_id('mfc-')
-        batch.add(
-            service.projects()
-            .serviceAccounts()
-            .create(
-                name=f'projects/{project}',
-                body={
-                    'accountId': aid,
-                    'serviceAccount': {'displayName': aid},
-                },
-            )
-        )
-
+        batch.add(service.projects().serviceAccounts().create(name='projects/' + project, body={'accountId': aid,
+                                                                                                'serviceAccount': {
+                                                                                                    'displayName': aid}}))
     batch.execute()
 
 
 # Create accounts needed to fill project
 def _create_remaining_accounts(iam, project):
-    print(f'Creating accounts in {project}')
+    print('Creating accounts in %s' % project)
     sa_count = len(_list_sas(iam, project))
     while sa_count != 100:
         _create_accounts(iam, project, 100 - sa_count)
@@ -67,14 +58,14 @@ def _def_batch_resp(id, resp, exception):
         if str(exception).startswith('<HttpError 429'):
             sleep(sleep_time / 100)
         else:
-            print(exception)
+            print(str(exception))
 
 
 # Project Creation Batch Handler
 def _pc_resp(id, resp, exception):
     global project_create_ops
     if exception is not None:
-        print(exception)
+        print(str(exception))
     else:
         for i in resp.values():
             project_create_ops.append(i)
@@ -105,20 +96,16 @@ def _enable_services(service, projects, ste):
     batch = service.new_batch_http_request(callback=_def_batch_resp)
     for i in projects:
         for j in ste:
-            batch.add(service.services().enable(name=f'projects/{i}/services/{j}'))
+            batch.add(service.services().enable(name='projects/%s/services/%s' % (i, j)))
     batch.execute()
 
 
 # List SAs in project
 def _list_sas(iam, project):
-    resp = (
-        iam.projects()
-        .serviceAccounts()
-        .list(name=f'projects/{project}', pageSize=100)
-        .execute()
-    )
-
-    return resp['accounts'] if 'accounts' in resp else []
+    resp = iam.projects().serviceAccounts().list(name='projects/' + project, pageSize=100).execute()
+    if 'accounts' in resp:
+        return resp['accounts']
+    return []
 
 
 # Create Keys Batch Handler
@@ -141,27 +128,21 @@ def _create_sa_keys(iam, projects, path):
     global current_key_dump
     for i in projects:
         current_key_dump = []
-        print(f'Downloading keys from {i}')
+        print('Downloading keys from %s' % i)
         while current_key_dump is None or len(current_key_dump) != 100:
             batch = iam.new_batch_http_request(callback=_batch_keys_resp)
             total_sas = _list_sas(iam, i)
             for j in total_sas:
-                batch.add(
-                    iam.projects()
-                    .serviceAccounts()
-                    .keys()
-                    .create(
-                        name=f"projects/{i}/serviceAccounts/{j['uniqueId']}",
-                        body={
-                            'privateKeyType': 'TYPE_GOOGLE_CREDENTIALS_FILE',
-                            'keyAlgorithm': 'KEY_ALG_RSA_2048',
-                        },
-                    )
-                )
-
+                batch.add(iam.projects().serviceAccounts().keys().create(
+                    name='projects/%s/serviceAccounts/%s' % (i, j['uniqueId']),
+                    body={
+                        'privateKeyType': 'TYPE_GOOGLE_CREDENTIALS_FILE',
+                        'keyAlgorithm': 'KEY_ALG_RSA_2048'
+                    }
+                ))
             batch.execute()
             if current_key_dump is None:
-                print(f'Redownloading keys from {i}')
+                print('Redownloading keys from %s' % i)
                 current_key_dump = []
             else:
                 for index, j in enumerate(current_key_dump):
@@ -221,9 +202,7 @@ def serviceaccountfactory(
             if loads(e.content.decode('utf-8'))['error']['status'] == 'PERMISSION_DENIED':
                 try:
                     serviceusage.services().enable(
-                        name=f'projects/{proj_id}/services/cloudresourcemanager.googleapis.com'
-                    ).execute()
-
+                        name='projects/%s/services/cloudresourcemanager.googleapis.com' % proj_id).execute()
                 except HttpError as e:
                     print(e._get_reason())
                     input('Press Enter to retry.')
@@ -232,7 +211,7 @@ def serviceaccountfactory(
     if list_sas:
         return _list_sas(iam, list_sas)
     if create_projects:
-        print(f"creat projects: {create_projects}")
+        print("creat projects: {}".format(create_projects))
         if create_projects > 0:
             current_count = len(_get_projects(cloud))
             if current_count + create_projects <= max_projects:
@@ -256,7 +235,7 @@ def serviceaccountfactory(
             ste = selected_projects
         elif enable_services == '*':
             ste = _get_projects(cloud)
-        services = [f'{i}.googleapis.com' for i in services]
+        services = [i + '.googleapis.com' for i in services]
         print('Enabling services')
         _enable_services(serviceusage, ste, services)
     if create_sas:
@@ -287,7 +266,7 @@ def serviceaccountfactory(
         elif delete_sas == '*':
             std = _get_projects(cloud)
         for i in std:
-            print(f'Deleting service accounts in {i}')
+            print('Deleting service accounts in %s' % i)
             _delete_sas(iam, i)
 
 
@@ -332,10 +311,7 @@ if __name__ == '__main__':
                 if inp in inp_options:
                     break
             args.credentials = inp if inp in options else options[int(inp) - 1]
-            print(
-                f'Use --credentials {args.credentials} next time to use this credentials file.'
-            )
-
+            print('Use --credentials %s next time to use this credentials file.' % args.credentials)
     if args.quick_setup:
         opt = '~' if args.new_only else '*'
         args.services = ['iam', 'drive']
@@ -362,13 +338,13 @@ if __name__ == '__main__':
             if resp:
                 print('Projects (%d):' % len(resp))
                 for i in resp:
-                    print(f'  {i}')
+                    print('  ' + i)
             else:
                 print('No projects.')
         elif args.list_sas:
             if resp:
                 print('Service accounts in %s (%d):' % (args.list_sas, len(resp)))
                 for i in resp:
-                    print(f"  {i['email']} ({i['uniqueId']})")
+                    print('  %s (%s)' % (i['email'], i['uniqueId']))
             else:
                 print('No service accounts.')

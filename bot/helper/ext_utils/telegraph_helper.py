@@ -2,10 +2,13 @@
 
 from string import ascii_letters
 from random import SystemRandom
+
 from time import sleep
 from telegraph import Telegraph
 from telegraph.exceptions import RetryAfterError
-from bot import LOGGER, TITLE_NAME
+
+from bot import LOGGER
+
 
 class TelegraphHelper:
     def __init__(self, author_name=None, author_url=None):
@@ -69,9 +72,10 @@ class TelegraphHelper:
                     nxt_page += 1
             self.edit_page(
                 path = path[prev_page],
-                title = f'{TITLE_NAME} Torrent Search',
+                title = 'Mirror-leech-bot Torrent Search',
                 content=content
             )
         return
 
-telegraph=TelegraphHelper(f'{TITLE_NAME}', 'https://github.com/woodcraft5/mirror-leech-bot')
+
+telegraph=TelegraphHelper('Mirror-Leech-Telegram-Bot', 'https://github.com/anasty17/mirror-leech-telegram-bot')

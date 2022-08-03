@@ -3,14 +3,14 @@ from telegram.ext import CommandHandler, CallbackQueryHandler
 from telegram import InlineKeyboardMarkup
 from time import sleep
 from re import split as re_split
-from bot import DOWNLOAD_DIR, dispatcher, BOT_PM, LOGGER, FSUB, FSUB_CHANNEL_ID, CHANNEL_USERNAME, TITLE_NAME
-from bot.helper.telegram_helper.message_utils import sendMessage, sendMarkup, editMessage, auto_delete_message
+
+from bot import DOWNLOAD_DIR, dispatcher
+from bot.helper.telegram_helper.message_utils import sendMessage, sendMarkup, editMessage
 from bot.helper.telegram_helper import button_build
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, is_url
 from bot.helper.mirror_utils.download_utils.youtube_dl_download_helper import YoutubeDLHelper
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.filters import CustomFilters
-from bot.helper.telegram_helper.button_build import ButtonMaker
 from .mirror import MirrorListener
 
 listener_dict = {}
@@ -19,71 +19,35 @@ def _watch(bot, message, isZip=False, isLeech=False, multi=0):
     mssg = message.text
     user_id = message.from_user.id
     msg_id = message.message_id
-    buttons = ButtonMaker()
-    
-    if FSUB:
-        try:
-            uname = message.from_user.mention_html(message.from_user.first_name)
-            user = bot.get_chat_member(FSUB_CHANNEL_ID, message.from_user.id)
-            if user.status not in ['member', 'creator', 'administrator']:
-                buttons.buildbutton(f"{TITLE_NAME}", f"https://t.me/{CHANNEL_USERNAME}")
-                reply_markup = InlineKeyboardMarkup(buttons.build_menu(1))
-                return sendMarkup(f"<b>Dear {uname}️,\n\nI found that you haven't joined our Updates Channel yet.\n\nJoin and Use Bots Without Restrictions.</b>", bot, message, reply_markup)
-        except Exception as e:
-            LOGGER.info(str(e))
 
-    if BOT_PM and message.chat.type != 'private':
-        try:
-            msg1 = f'Added your Requested link to Download\n'
-            send = bot.sendMessage(message.from_user.id, text=msg1)
-            send.delete()
-        except Exception as e:
-            LOGGER.warning(e)
-            bot_d = bot.get_me()
-            b_uname = bot_d.username
-            uname = f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a>'
-            botstart = f"http://t.me/{b_uname}"
-            buttons.buildbutton("➦Click Here to Start Me", f"{botstart}")
-            startwarn = f"Dear {uname},\n\n<b>I found that you haven't started me in PM (Private Chat) yet.</b>\n\n" \
-                        f"From now on i will give link and leeched files in PM and log channel only"
-            message = sendMarkup(startwarn, bot, message, InlineKeyboardMarkup(buttons.build_menu(2)))
-            Thread(target=auto_delete_message, args=(bot, message, message)).start()
-            return
-
-    link = mssg.split()
-    if len(link) > 1:
-        link = link[1].strip()
-        if link.strip().isdigit():
+    try:
+        link = mssg.split(' ')[1].strip()
+        if link.isdigit():
             multi = int(link)
-            link = ''
-        elif link.strip().startswith(("|", "pswd:", "args:")):
-            link = ''
-    else:
+            raise IndexError
+        elif link.startswith(("|", "pswd:", "args:")):
+            raise IndexError
+    except:
         link = ''
-    
-    name = mssg.split('|', maxsplit=1)
-    if len(name) > 1:
-        if 'args: ' in name[0] or 'pswd: ' in name[0]:
-            name = ''
+    try:
+        name_arg = mssg.split('|', maxsplit=1)
+        if 'args: ' in name_arg[0]:
+            raise IndexError
         else:
-            name = name[1]
-        if name != '':
-            name = re_split('pswd:|args:', name)[0]
-            name = name.strip()
-    else:
+            name = name_arg[1]
+        name = re_split(r' pswd: | args: ', name)[0]
+        name = name.strip()
+    except:
         name = ''
-    
-    pswd = mssg.split(' pswd: ')
-    if len(pswd) > 1:
-        pswd = pswd[1]
+    try:
+        pswd = mssg.split(' pswd: ')[1]
         pswd = pswd.split(' args: ')[0]
-    else:
+    except:
         pswd = None
 
-    args = mssg.split(' args: ')
-    if len(args) > 1:
-        args = args[1]
-    else:
+    try:
+        args = mssg.split(' args: ')[1]
+    except:
         args = None
 
     if message.from_user.username:
@@ -94,7 +58,7 @@ def _watch(bot, message, isZip=False, isLeech=False, multi=0):
     reply_to = message.reply_to_message
     if reply_to is not None:
         if len(link) == 0:
-            link = reply_to.text.split(maxsplit=1)[0].strip()
+            link = reply_to.text.strip()
         if reply_to.from_user.username:
             tag = f"@{reply_to.from_user.username}"
         else:

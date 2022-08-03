@@ -211,14 +211,6 @@ input[type="submit"]:hover, input[type="submit"]:focus{
   z-index: 10000;
 }
 </style>
-<script>
-function s_validate() {
-    if ($("input[name^='filenode_']:checked").length == 0) {
-        alert("Please select at least one file");
-        return false;
-        }
-    }
-</script>
 </head>
 <body>
   <!--© Designed and coded by @bipuldey19-Telegram-->
@@ -242,7 +234,7 @@ function s_validate() {
         <h4>Selected files size: <b id="checked_size">0</b> of <b id="total_size">0</b></h4>
     </div>
       <section>
-      <form action="{form_url}" onsubmit="return s_validate()" method="POST">
+      <form action="{form_url}" method="POST">
        {My_content}
        <input type="submit" name="Select these files ;)">
       </form>

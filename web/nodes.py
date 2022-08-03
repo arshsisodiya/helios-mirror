@@ -50,15 +50,16 @@ def make_tree(res):
 
             # Traverse till second last assuming the last is a file.
             for j in range(len(folders)-1):
-                current_node = next(
-                    (
-                        k
-                        for k in previous_node.children
-                        if k.name == folders[j]
-                    ),
-                    None,
-                )
+                current_node = None
 
+                # As we are traversing the folder from top to bottom we are searching
+                # the first folder (folders list) under the parent node in first iteration.
+                # If the node is found then it becomes the current node else the current node
+                # is left None.
+                for k in previous_node.children:
+                    if k.name == folders[j]:
+                        current_node = k
+                        break
                 # if the node is not found then create the folder node
                 # if the node is found then use it as base for the next
                 if current_node is None:
@@ -86,17 +87,17 @@ def create_list(par, msg):
         if i.is_folder:
             msg[0] += "<li>"
             if i.name != ".unwanted":
-                msg[0] += f'<input type="checkbox" name="foldernode_{msg[1]}"> <label for="{i.name}">{i.name}</label>'
+                msg[0] += f"<input type=\"checkbox\" name=\"foldernode_{msg[1]}\"> <label for=\"{i.name}\">{i.name}</label>"
             create_list(i,msg)
             msg[0] += "</li>"
             msg[1] += 1
         else:
             msg[0] += '<li>'
             if i.priority == 0:
-                msg[0] += f'<input type="checkbox" name="filenode_{i.file_id}" data-size="{i.size}"> <label data-size="{i.size}" for="filenode_{i.file_id}">{i.name}</label>'
+                msg[0] += f"<input type=\"checkbox\" name=\"filenode_{i.file_id}\" data-size=\"{i.size}\"> <label data-size=\"{i.size}\" for=\"filenode_{i.file_id}\">{i.name}</label>"
             else:
-                msg[0] += f'<input type="checkbox" checked name="filenode_{i.file_id}" data-size="{i.size}"> <label data-size="{i.size}" for="filenode_{i.file_id}">{i.name}</label>'
-            msg[0] += f'<input type="hidden" value="off" name="filenode_{i.file_id}">'
+                msg[0] += f"<input type=\"checkbox\" checked name=\"filenode_{i.file_id}\" data-size=\"{i.size}\"> <label data-size=\"{i.size}\" for=\"filenode_{i.file_id}\">{i.name}</label>"
+            msg[0] += f"<input type=\"hidden\" value=\"off\" name=\"filenode_{i.file_id}\">"
 
             msg[0] += "</li>"
 

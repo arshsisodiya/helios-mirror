@@ -17,7 +17,8 @@ from bot.helper.telegram_helper import button_build
 if SEARCH_PLUGINS is not None:
     PLUGINS = []
     qbclient = get_client()
-    if qb_plugins := qbclient.search_plugins():
+    qb_plugins = qbclient.search_plugins()
+    if qb_plugins:
         for plugin in qb_plugins:
             qbclient.search_uninstall_plugin(names=plugin['name'])
     qbclient.search_install_plugin(SEARCH_PLUGINS)
@@ -48,12 +49,13 @@ TELEGRAPH_LIMIT = 300
 
 def torser(update, context):
     user_id = update.message.from_user.id
+    key = update.message.text.split(" ", maxsplit=1)
     buttons = button_build.ButtonMaker()
     if SEARCH_API_LINK is  None and SEARCH_PLUGINS is None:
         sendMessage("No API link or search PLUGINS added for this function", context.bot, update.message)
-    elif len(context.args) == 0 and SEARCH_API_LINK is None:
+    elif len(key) == 1 and SEARCH_API_LINK is None:
         sendMessage("Send a search key along with command", context.bot, update.message)
-    elif len(context.args) == 0:
+    elif len(key) == 1:
         buttons.sbutton('Trending', f"torser {user_id} apitrend")
         buttons.sbutton('Recent', f"torser {user_id} apirecent")
         buttons.sbutton("Cancel", f"torser {user_id} cancel")
@@ -65,10 +67,10 @@ def torser(update, context):
         buttons.sbutton("Cancel", f"torser {user_id} cancel")
         button = InlineKeyboardMarkup(buttons.build_menu(2))
         sendMarkup('Choose tool to search:', context.bot, update.message, button)
-    elif SEARCH_API_LINK is not None:
+    elif SEARCH_API_LINK is not None and SEARCH_PLUGINS is None:
         button = _api_buttons(user_id, "apisearch")
         sendMarkup('Choose site to search:', context.bot, update.message, button)
-    else:
+    elif SEARCH_API_LINK is None and SEARCH_PLUGINS is not None:
         button = _plugin_buttons(user_id)
         sendMarkup('Choose site to search:', context.bot, update.message, button)
 
@@ -76,10 +78,13 @@ def torserbut(update, context):
     query = update.callback_query
     user_id = query.from_user.id
     message = query.message
-    key = message.reply_to_message.text.split(maxsplit=1)
-    key = key[1].strip() if len(key) > 1 else None
+    key = message.reply_to_message.text.split(" ", maxsplit=1)
+    if len(key) > 1:
+        key = key[1]
+    else:
+        key = None
     data = query.data
-    data = data.split()
+    data = data.split(" ")
     if user_id != int(data[1]):
         query.answer(text="Not Yours!", show_alert=True)
     elif data[2].startswith('api'):
@@ -96,10 +101,10 @@ def torserbut(update, context):
         method = data[3]
         if method.startswith('api'):
             if key is None:
-                if method == 'apirecent':
-                    endpoint = 'Recent'
-                elif method == 'apitrend':
+                if method == 'apitrend':
                     endpoint = 'Trending'
+                elif method == 'apirecent':
+                    endpoint = 'Recent'
                 editMessage(f"<b>Listing {endpoint} Items...\nTorrent Site:- <i>{SITES.get(site)}</i></b>", message)
             else:
                 editMessage(f"<b>Searching for <i>{key}</i>\nTorrent Site:- <i>{SITES.get(site)}</i></b>", message)
@@ -224,7 +229,7 @@ def _getResult(search_results, key, message, method):
 
     editMessage(f"<b>Creating</b> {len(telegraph_content)} <b>Telegraph pages.</b>", message)
     path = [telegraph.create_page(
-                title='WOODcraft Torrent Search',
+                title='Mirror-leech-bot Torrent Search',
                 content=content
             )["path"] for content in telegraph_content]
     sleep(0.5)

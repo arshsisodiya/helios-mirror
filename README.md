@@ -184,7 +184,7 @@ Fill up rest of the fields. Meaning of each field is discussed below:
   - **NOTE**: All above url variables used incase you want edit them in future easily without deploying again or if you want to deploy from public fork. If deploying using cli or private fork you can leave these variables empty add token.pickle, accounts folder, drive_folder, .netrc and cookies.txt directly to root but you can't update them without rebuild OR simply leave all above variables and use private UPSTREAM_REPO.
 
 ### Heroku
-- `HEROKU_APP_NAME` and `HEROKU_API_KEY`: Heroku Api key and App name for showing heroku dyno hour info in stats
+- `HEROKU_APP_NAME` and `HEROKU_API_KEY`: Bot will automatically get this value from GitHub Secrets
 
 ### MEGA
 - `MEGA_API_KEY`: Mega.nz API key to mirror mega.nz links. Get it from [Mega SDK Page](https://mega.nz/sdk)

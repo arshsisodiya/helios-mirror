@@ -208,7 +208,11 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 ### Buttons
 - `SOURCE_LINK`: -  set it `True` if you want to get Source Link of Mirrored/Cloned file,  Default is `False`.
 - `VIEW_LINK`: View Link button to open file Index Link in browser instead of direct download link, you can figure out if it's compatible with your Index code or not, open any video from you Index and check if its URL ends with `?a=view`, if yes make it `True`, compatible with [BhadooIndex](https://gitlab.com/ParveenBhadooOfficial/Google-Drive-Index) Code. Default is `False`. `Bool`
-
+- Two buttons that will show when using /start command, if you don't understand it leave it empty.
+  - `START_BTN1_NAME`:
+  - `START_BTN1_URL`:
+  - `START_BTN2_NAME`:
+  - `START_BTN2_URL`:
 - Three buttons are already added including Drive Link, Index Link, and View Link, you can add extra buttons, if you don't know what are the below entries, simply leave them empty.
   - `BUTTON_FOUR_NAME`:
   - `BUTTON_FOUR_URL`:

@@ -249,7 +249,7 @@ def is_gdtot_link(url: str):
     url = re_match(r'https?://.+\.gdtot\.\S+', url)
     return bool(url)
 def is_appdrive_link(url: str):
-    url = re_match(r'https?://(?:\S*\.)?(?:appdrive|driveapp)\.in/\S+', url)
+    url = re_match(r'https?://(?:\S*\.)?(?:appdrive|driveapp)\.\S+', url)
     return bool(url)
 def is_mega_link(url: str):
     return "mega.nz" in url or "mega.co.nz" in url

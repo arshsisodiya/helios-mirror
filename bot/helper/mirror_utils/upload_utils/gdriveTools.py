@@ -679,7 +679,7 @@ class GoogleDriveHelper:
 
         msg = f"<b>Found {contents_count} result for <i>{fileName}</i></b>"
         buttons = ButtonMaker()
-        buttons.buildbutton("🔎 VIEW", f"https://telegra.ph/{path[0]}")
+        buttons.buildbutton("🔎 VIEW", f"https://graph.org/{path[0]}")
 
         return msg, InlineKeyboardMarkup(buttons.build_menu(1))
 

@@ -240,7 +240,7 @@ class MirrorListener:
                         title='Helios-Mirror Source Link',
                         content=source_link,
                     )["path"]
-                        buttons.buildbutton(f"🔗 Source Link", f"https://telegra.ph/{link}")
+                        buttons.buildbutton(f"🔗 Source Link", f"https://graph.org/{link}")
                     else:
                         buttons.buildbutton(f"🔗 Source Link", source_link)
                 except Exception as e:
@@ -256,7 +256,7 @@ class MirrorListener:
                                     title='Helios-Mirror Source Link',
                                     content=source_link,
                                 )["path"]
-                                buttons.buildbutton(f"🔗 Source Link", f"https://telegra.ph/{link}")
+                                buttons.buildbutton(f"🔗 Source Link", f"https://graph.org/{link}")
                             else:
                                 buttons.buildbutton(f"🔗 Source Link", source_link)
                     except Exception as e:
@@ -318,7 +318,7 @@ class MirrorListener:
                             title='Helios-Mirror Source Link',
                             content=mesg,
                         )["path"]
-                        buttons.buildbutton(f"🔗 Source Link", f"https://telegra.ph/{link}")
+                        buttons.buildbutton(f"🔗 Source Link", f"https://graph.org/{link}")
                     elif is_url(mesg):
                         source_link = mesg
                         if source_link.startswith(("|", "pswd: ")):
@@ -340,7 +340,7 @@ class MirrorListener:
                                 title='Helios-Mirror Source Link',
                                 content=source_link,
                             )["path"]
-                            buttons.buildbutton(f"🔗 Source Link", f"https://telegra.ph/{link}")
+                            buttons.buildbutton(f"🔗 Source Link", f"https://graph.org/{link}")
                         else:
                             buttons.buildbutton(f"🔗 Source Link", source_link)
                 except Exception as e:

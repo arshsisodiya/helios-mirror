@@ -236,7 +236,7 @@ def _getResult(search_results, key, message, method):
     if len(path) > 1:
         editMessage(f"<b>Editing</b> {len(telegraph_content)} <b>Telegraph pages.</b>", message)
         telegraph.edit_telegraph(path, telegraph_content)
-    return f"https://telegra.ph/{path[0]}"
+    return f"https://graph.org/{path[0]}"
 
 def _api_buttons(user_id, method):
     buttons = button_build.ButtonMaker()

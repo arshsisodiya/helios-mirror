@@ -52,11 +52,11 @@ class ExtractStatus:
     def status(self):
         return MirrorStatus.STATUS_EXTRACTING
 
-    def eng(self):
-        return EngineStatus.STATUS_EXT
-
     def processed_bytes(self):
-        return get_path_size(f"{DOWNLOAD_DIR}{self.__uid}") - self.__size
+        if self.__listener.newDir:
+            return get_path_size(f"{DOWNLOAD_DIR}{self.__uid}10000")
+        else:
+            return get_path_size(f"{DOWNLOAD_DIR}{self.__uid}") - self.__size
 
     def download(self):
         return self
@@ -66,3 +66,6 @@ class ExtractStatus:
         if self.__listener.suproc is not None:
             self.__listener.suproc.kill()
         self.__listener.onUploadError('extracting stopped by user!')
+
+    def eng(self):
+        return EngineStatus.STATUS_EXT

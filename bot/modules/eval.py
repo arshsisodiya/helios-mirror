@@ -60,7 +60,7 @@ def cleanup_code(code):
 
 def do(func, bot, update):
     log_input(update)
-    content = update.message.text.split(' ', 1)[-1]
+    content = update.message.text.split(maxsplit=1)[-1]
     body = cleanup_code(content)
     env = namespace_of(update.message.chat_id, update, bot)
 
@@ -112,22 +112,10 @@ def clear(update, context):
         del namespaces[update.message.chat_id]
     send("Cleared locals.", bot, update)
 
-def exechelp(update, context):
-    help_string = f'''
-<b>Executor</b>
-• {BotCommands.EvalCommand} <i>Run Python Code Line | Lines</i>
-• {BotCommands.ExecCommand} <i>Run Commands In Exec</i>
-• {BotCommands.ClearLocalsCommand} <i>Cleared locals</i>
-'''
-    sendMessage(help_string, context.bot, update.message)
-
-
 EVAL_HANDLER = CommandHandler(BotCommands.EvalCommand, evaluate, filters=CustomFilters.owner_filter, run_async=True)
 EXEC_HANDLER = CommandHandler(BotCommands.ExecCommand, execute, filters=CustomFilters.owner_filter, run_async=True)
 CLEAR_HANDLER = CommandHandler(BotCommands.ClearLocalsCommand, clear, filters=CustomFilters.owner_filter, run_async=True)
-EXECHELP_HANDLER = CommandHandler(BotCommands.ExecHelpCommand, exechelp, filters=CustomFilters.owner_filter, run_async=True)
 
 dispatcher.add_handler(EVAL_HANDLER)
 dispatcher.add_handler(EXEC_HANDLER)
 dispatcher.add_handler(CLEAR_HANDLER)
-dispatcher.add_handler(EXECHELP_HANDLER)

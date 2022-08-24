@@ -20,9 +20,6 @@ class CloneStatus:
     def status(self):
         return MirrorStatus.STATUS_CLONING
 
-    def eng(self):
-        return EngineStatus.STATUS_GDRIVE
-
     def name(self):
         return self.__obj.name
 
@@ -56,3 +53,6 @@ class CloneStatus:
 
     def download(self):
         return self.__obj
+
+    def eng(self):
+        return EngineStatus.STATUS_GD

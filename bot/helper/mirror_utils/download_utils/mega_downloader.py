@@ -1,9 +1,9 @@
 from threading import Lock
 from pathlib import Path
 
-from bot import LOGGER, download_dict, download_dict_lock, MEGA_LIMIT, STOP_DUPLICATE, ZIP_UNZIP_LIMIT, STORAGE_THRESHOLD
-from bot.helper.telegram_helper.message_utils import sendMessage, sendMarkup, sendStatusMessage
-from bot.helper.ext_utils.bot_utils import get_readable_file_size, setInterval
+from bot import LOGGER, download_dict, download_dict_lock, STOP_DUPLICATE, MEGA_LIMIT, STOP_DUPLICATE, ZIP_UNZIP_LIMIT, STORAGE_THRESHOLD
+from bot.helper.telegram_helper.message_utils import sendMessage, sendStatusMessage, sendMarkup
+from bot.helper.ext_utils.bot_utils import setInterval, get_readable_file_size
 from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
 from bot.helper.ext_utils.fs_utils import get_base_name, check_storage_threshold
 from ..status_utils.mega_download_status import MegaDownloadStatus
@@ -50,7 +50,7 @@ class MegaDownloader:
             return self.__name
 
     @property
-    def speed(self):
+    def download_speed(self):
         if self.gid is not None:
             return self.__mega_client.getDownloadInfo(self.gid)['speed']
 
@@ -67,9 +67,8 @@ class MegaDownloader:
 
     def __onInterval(self):
         dlInfo = self.__mega_client.getDownloadInfo(self.gid)
-        if (dlInfo['state'] == constants.State.TYPE_STATE_COMPLETED or dlInfo[
-            'state'] == constants.State.TYPE_STATE_CANCELED or dlInfo[
-                'state'] == constants.State.TYPE_STATE_FAILED) and self.__periodic is not None:
+        if dlInfo['state'] in [constants.State.TYPE_STATE_COMPLETED, constants.State.TYPE_STATE_CANCELED,
+            constants.State.TYPE_STATE_FAILED] and self.__periodic is not None:
             self.__periodic.cancel()
         if dlInfo['state'] == constants.State.TYPE_STATE_COMPLETED:
             self.__onDownloadComplete()
@@ -111,7 +110,7 @@ class MegaDownloader:
             LOGGER.info('Checking File/Folder if already in Drive')
             mname = file_name
             if self.__listener.isZip:
-                mname = mname + ".zip"
+                mname = f"{mname}.zip"
             elif self.__listener.extract:
                 try:
                     mname = get_base_name(mname)
@@ -134,7 +133,7 @@ class MegaDownloader:
             if ZIP_UNZIP_LIMIT is not None and arch:
                 msg3 = f'Failed, Zip/Unzip limit is {ZIP_UNZIP_LIMIT}GB.\nYour File/Folder size is {get_readable_file_size(file_size)}.'
                 limit = ZIP_UNZIP_LIMIT
-            elif MEGA_LIMIT is not None:
+            elif MEGA_LIMIT is  not None:
                 msg3 = f'Failed, Mega limit is {MEGA_LIMIT}GB.\nYour File/Folder size is {get_readable_file_size(file_size)}.'
                 limit = MEGA_LIMIT
             if limit is not None:

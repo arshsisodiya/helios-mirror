@@ -72,10 +72,14 @@ class TelegraphHelper:
                     nxt_page += 1
             self.edit_page(
                 path = path[prev_page],
-                title = 'Mirror-leech-bot Torrent Search',
+                title = 'Helios Mirror Torrent Search',
                 content=content
             )
         return
 
-
-telegraph=TelegraphHelper(f'{AUTHOR_NAME}', f'{AUTHOR_URL}')
+try:
+    telegraph=TelegraphHelper(f'{AUTHOR_NAME}', f'{AUTHOR_URL}')
+except Exception as err:
+    LOGGER.warning(f"Can't Create Telegraph Account: {err}")
+    telegraph = None
+    pass

@@ -1,6 +1,7 @@
 from bot import LOGGER
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, MirrorStatus, EngineStatus
 
+
 class SplitStatus:
     def __init__(self, name, size, gid, listener):
         self.__name = name
@@ -30,9 +31,6 @@ class SplitStatus:
     def status(self):
         return MirrorStatus.STATUS_SPLITTING
 
-    def eng(self):
-        return EngineStatus.STATUS_SPLIT
-
     def processed_bytes(self):
         return 0
 
@@ -41,5 +39,9 @@ class SplitStatus:
 
     def cancel_download(self):
         LOGGER.info(f'Cancelling Split: {self.__name}')
-        self.__listener.split_proc.kill()
+        if self.__listener.suproc is not None:
+            self.__listener.suproc.kill()
         self.__listener.onUploadError('splitting stopped by user!')
+
+    def eng(self):
+        return EngineStatus.STATUS_SPLIT

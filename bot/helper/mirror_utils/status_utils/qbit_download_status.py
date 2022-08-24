@@ -1,9 +1,9 @@
 from bot import LOGGER
-from bot.helper.ext_utils.bot_utils import MirrorStatus, EngineStatus, get_readable_file_size, get_readable_time
+from bot.helper.ext_utils.bot_utils import MirrorStatus, get_readable_file_size, get_readable_time, EngineStatus
 
-def get_download(client, hash_):
+def get_download(client, uid):
     try:
-        return client.torrents_info(torrent_hashes=hash_)[0]
+        return client.torrents_info(tag=uid)[0]
     except Exception as e:
         LOGGER.error(f'{e}: while getting torrent info')
 
@@ -14,11 +14,11 @@ class QbDownloadStatus:
         self.__obj = obj
         self.__listener = listener
         self.__uid = listener.uid
-        self.__info = get_download(obj.client, obj.ext_hash)
+        self.__info = get_download(obj.client, self.__uid)
         self.message = listener.message
 
     def __update(self):
-        self.__info = get_download(self.__obj.client, self.__obj.ext_hash)
+        self.__info = get_download(self.__obj.client, self.__uid)
 
     def progress(self):
         """
@@ -32,10 +32,7 @@ class QbDownloadStatus:
         Gets total size of the mirror file/folder
         :return: total size of mirror
         """
-        if self.__obj.select:
-            return self.__info.size
-        else:
-            return self.__info.total_size
+        return self.__info.size
 
     def processed_bytes(self):
         return self.__info.downloaded
@@ -47,7 +44,7 @@ class QbDownloadStatus:
     def name(self):
         self.__update()
         if self.__info.state in ["metaDL", "checkingResumeData"]:
-            return self.__info.name + " [METADATA]"
+            return f"[METADATA]{self.__info.name}"
         else:
             return self.__info.name
 
@@ -62,17 +59,31 @@ class QbDownloadStatus:
         if download in ["queuedDL", "queuedUP"]:
             return MirrorStatus.STATUS_WAITING
         elif download in ["pausedDL", "pausedUP"]:
-            return MirrorStatus.STATUS_PAUSE
+            return MirrorStatus.STATUS_PAUSED
         elif download in ["checkingUP", "checkingDL"]:
             return MirrorStatus.STATUS_CHECKING
+        elif download in ["stalledUP", "uploading"] and self.__obj.is_seeding:
+            return MirrorStatus.STATUS_SEEDING
         else:
             return MirrorStatus.STATUS_DOWNLOADING
 
-    def eng(self):
-        return EngineStatus.STATUS_QB
+    def seeders_num(self):
+        return self.__info.num_seeds
 
-    def torrent_info(self):
-        return self.__info
+    def leechers_num(self):
+        return self.__info.num_leechs
+
+    def uploaded_bytes(self):
+        return f"{get_readable_file_size(self.__info.uploaded)}"
+
+    def upload_speed(self):
+        return f"{get_readable_file_size(self.__info.upspeed)}/s"
+
+    def ratio(self):
+        return f"{round(self.__info.ratio, 3)}"
+
+    def seeding_time(self):
+        return f"{get_readable_time(self.__info.seeding_time)}"
 
     def download(self):
         return self.__obj
@@ -85,3 +96,6 @@ class QbDownloadStatus:
 
     def listener(self):
         return self.__listener
+
+    def eng(self):
+        return EngineStatus.STATUS_QB

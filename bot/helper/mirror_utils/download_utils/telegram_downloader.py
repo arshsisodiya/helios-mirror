@@ -1,14 +1,13 @@
 from logging import getLogger, WARNING
 from time import time
 from threading import RLock, Lock
-from pyrogram import Client, enums
 
-from bot import LOGGER, download_dict, download_dict_lock, STOP_DUPLICATE, STORAGE_THRESHOLD, app
-from bot.helper.ext_utils.bot_utils import get_readable_file_size
+from bot import LOGGER, download_dict, download_dict_lock, STOP_DUPLICATE, app, STORAGE_THRESHOLD
 from ..status_utils.telegram_download_status import TelegramDownloadStatus
-from bot.helper.telegram_helper.message_utils import sendMarkup, sendMessage, sendStatusMessage
+from bot.helper.telegram_helper.message_utils import sendStatusMessage, sendMarkup, sendMessage
 from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
 from bot.helper.ext_utils.fs_utils import check_storage_threshold
+from bot.helper.ext_utils.bot_utils import get_readable_file_size
 
 global_lock = Lock()
 GLOBAL_GID = set()
@@ -82,12 +81,7 @@ class TelegramDownloadHelper:
 
     def add_download(self, message, path, filename):
         _dmsg = app.get_messages(message.chat.id, reply_to_message_ids=message.message_id)
-        media = None
-        media_array = [_dmsg.document, _dmsg.video, _dmsg.audio]
-        for i in media_array:
-            if i is not None:
-                media = i
-                break
+        media = _dmsg.document or _dmsg.video or _dmsg.audio or None
         if media is not None:
             with global_lock:
                 # For avoiding locking the thread lock for long time unnecessarily
@@ -105,7 +99,6 @@ class TelegramDownloadHelper:
                     smsg, button = GoogleDriveHelper().drive_list(name, True, True)
                     if smsg:
                         msg = "File/Folder is already available in Drive.\nHere are the search results:"
-                        self.__onEventEnd()
                         return sendMarkup(msg, self.__listener.bot, self.__listener.message, button)
                 if STORAGE_THRESHOLD is not None:
                     arch = any([self.__listener.isZip, self.__listener.extract])

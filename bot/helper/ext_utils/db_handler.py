@@ -173,7 +173,6 @@ class DbManger:
         self.cur.execute(sql)
         self.conn.commit()
         self.disconnect()
-
         # For Leech log
     def addleech_log(self, chat_id: int):
         if self.err:
@@ -185,7 +184,7 @@ class DbManger:
         self.cur.execute(sql)
         self.conn.commit()
         self.disconnect()
-        return 'Successfully added to leech logs'
+        return f'Successfully added to leech logs'
 
     def rmleech_log(self, chat_id: int):
         if self.err:
@@ -196,7 +195,6 @@ class DbManger:
             self.conn.commit()
             self.disconnect()
             return 'Removed from leech logs successfully'
-
     def user_check(self, uid: int):
         self.cur.execute("SELECT * FROM users WHERE uid = {}".format(uid))
         res = self.cur.fetchone()

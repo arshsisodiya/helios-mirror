@@ -154,7 +154,7 @@ def get_readable_message():
             else:
                 msg += f"\n<b>Size: </b>{download.size()}"
             if download.message.chat.type != 'private':
-                uname = download.message.from_user.mention_html(download.message.from_user.first_name)
+                uname =download.message.from_user.first_name
                 msg += f"\n<b><a href='{download.message.link}'>Source</a>:</b> {uname} | <b>Id :</b> <code>{download.message.from_user.id}</code>"
             else:
                 msg += ''

@@ -104,7 +104,7 @@ def _clone(message, bot):
             result, button = gd.clone(link)
             deleteMessage(bot, msg)
             if BOT_PM and FORCE_BOT_PM:
-                botpm = f"\n\n<b>Hey {tag}!, I have sent your links in PM.</b>\n"
+                botpm = f"\n\n<b>Hey {tag}!, I have sent your cloned links in PM.</b>\n"
                 buttons = ButtonMaker()
                 b_uname = bot.get_me().username
                 botstart = f"http://t.me/{b_uname}"
@@ -133,7 +133,7 @@ def _clone(message, bot):
                     del Interval[0]
                     delete_all_messages()
                     if BOT_PM and FORCE_BOT_PM:
-                        botpm = f"\n\n<b>Hey {tag}!, I have sent your links in PM.</b>\n"
+                        botpm = f"\n\n<b>Hey {tag}!, I have sent your cloned links in PM.</b>\n"
                         buttons = ButtonMaker()
                         b_uname = bot.get_me().username
                         botstart = f"http://t.me/{b_uname}"

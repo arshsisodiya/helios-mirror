@@ -219,16 +219,22 @@ class MirrorLeechListener:
         mesg = self.message.text.split('\n')
         message_args = mesg[0].split(' ', maxsplit=1)
         reply_to = self.message.reply_to_message
-        if self.message.chat.type != 'private' and AUTO_DELETE_UPLOAD_MESSAGE_DURATION != -1:
-            if reply_to is not None:
+        if self.message.chat.type != 'private' and AUTO_DELETE_UPLOAD_MESSAGE_DURATION != -1 and reply_to is not None:
+            try:
                 reply_to.delete()
+            except exception as err:
+                pass
+        if self.isLeech:
+            uptype = "files"
+        else:
+            uptype = "links"
         msg = f"<b>Name: </b><code>{escape(name)}</code>\n\n<b>Size: </b>{size}"
-        if BOT_PM and FORCE_BOT_PM:
-            botpm = f"<b>\n\nHey {self.tag}!, I have sent your links in PM.</b>\n"
+        if BOT_PM and FORCE_BOT_PM and not self.isPrivate:
+            botpm = f"<b>\n\nHey {self.tag}!, I have sent your {uptype} in PM.</b>\n"
             buttons = ButtonMaker()
             b_uname = bot.get_me().username
             botstart = f"http://t.me/{b_uname}"
-            buttons.buildbutton("View links in PM", f"{botstart}")
+            buttons.buildbutton(f"View {uptype} in PM", f"{botstart}")
             sendMarkup(msg + botpm, self.bot, self.message, buttons.build_menu(2))
             self.message.delete()
             reply_to = self.message.reply_to_message
@@ -291,7 +297,7 @@ class MirrorLeechListener:
                     if FORCE_BOT_PM is False:
                         upldmsg = sendMarkup(msg + fmsg, self.bot, self.message, buttons.build_menu(1))
                         Thread(target=auto_delete_upload_message, args=(self.bot, self.message, upldmsg)).start()
-                if LEECH_LOG:
+                if LEECH_LOG and FORCE_BOT_PM:
                     try:
                         for chatid in LEECH_LOG:
                             bot.sendMessage(chat_id=chatid, text=msg + fmsg,
@@ -359,7 +365,7 @@ class MirrorLeechListener:
                         except Exception as e:
                             LOGGER.warning(e)
                             pass
-            if FORCE_BOT_PM is False:
+            if FORCE_BOT_PM is False or self.message.chat.type == 'private' :
                 upldmsg = sendMarkup(msg, self.bot, self.message, buttons.build_menu(2))
                 Thread(target=auto_delete_upload_message, args=(self.bot, self.message, upldmsg)).start()
             if MIRROR_LOGS:
@@ -398,9 +404,12 @@ class MirrorLeechListener:
 
     def onDownloadError(self, error):
         reply_to = self.message.reply_to_message
-        if reply_to is not None:
-            reply_to.delete()
-        else:
+        try:
+            if AUTO_DELETE_UPLOAD_MESSAGE_DURATION != -1 and reply_to is not None:
+                reply_to.delete()
+            else:
+                pass
+        except:
             pass
         error = error.replace('<', ' ').replace('>', ' ')
         clean_download(self.dir)

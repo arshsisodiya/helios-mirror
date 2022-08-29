@@ -125,7 +125,7 @@ In each single file there is a major change from base code, it's almost totaly d
 
 - Clone this repo:
 ```
-git clone https://github.com/anasty17/mirror-leech-telegram-bot mirrorbot/ && cd mirrorbot
+git clone https://github.com/arshsisodiya/helios-mirror mirrorbot/ && cd mirrorbot
 ```
 - For Debian based distros
 ```
@@ -171,11 +171,11 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `BOT_PM`: - set it`True` if you want to send mirror links and leeched files in user's PM, Default is `False`.
 - `FORCE_BOT_PM`: - set it `True` if True all mirrored links and leeched files will be send directly in PM, Mirrored links will not get sent in Current chat and source message will be deleted immediately after mirror/leech is complete, AUTO_DELETE_UPLOAD_MESSAGE_DURATION will not apply on it.
 - `IS_TEAM_DRIVE`: Set `True` if uploading to TeamDrive. Default is `False`. `Bool`
-- `DATABASE_URL`: Your SQL Database URL. Follow this [Generate Database](https://github.com/anasty17/mirror-leech-telegram-bot/tree/master#generate-database) to generate database. Data will be saved in Database: auth and sudo users, leech settings including thumbnails for each user, rss data and incomplete tasks. **NOTE**: If deploying on heroku and using heroku postgresql delete this variable from **config.env** file. **DATABASE_URL** will be grabbed from heroku variables. `Str`
+- `DATABASE_URL`: Your SQL Database URL. Follow this [Generate Database](https://github.com/arshsisodiya/helios-mirror/tree/master#generate-database) to generate database. Data will be saved in Database: auth and sudo users, leech settings including thumbnails for each user, rss data and incomplete tasks. **NOTE**: If deploying on heroku and using heroku postgresql delete this variable from **config.env** file. **DATABASE_URL** will be grabbed from heroku variables. `Str`
 - `AUTHORIZED_CHATS`: Fill user_id and chat_id of groups/users you want to authorize. Separate them by space. `Str`
 - `SUDO_USERS`: Fill user_id of users whom you want to give sudo permission. Separate them by space. `Str`
 - `IGNORE_PENDING_REQUESTS`: Ignore pending requests after restart. Default is `False`. `Bool`
-- `USE_SERVICE_ACCOUNTS`: Whether to use Service Accounts or not. For this to work see [Using Service Accounts](https://github.com/anasty17/mirror-leech-telegram-bot#generate-service-accounts-what-is-service-account) section below. Default is `False`. `Bool`
+- `USE_SERVICE_ACCOUNTS`: Whether to use Service Accounts or not. For this to work see [Using Service Accounts](https://github.com/arshsisodiya/helios-mirror#generate-service-accounts-what-is-service-account) section below. Default is `False`. `Bool`
 - `INDEX_URL`: Refer to https://gitlab.com/ParveenBhadooOfficial/Google-Drive-Index. `Str`
 - `STATUS_LIMIT`: Limit the no. of tasks shown in status message with buttons. **NOTE**: Recommended limit is `4` tasks. `Str`
 - `STOP_DUPLICATE`: Bot will check file in Drive, if it is present in Drive, downloading or cloning will be stopped. (**NOTE**: File will be checked using filename not file hash, so this feature is not perfect yet). Default is `False`. `Bool`
@@ -187,7 +187,7 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 
 ### Update
 - `UPSTREAM_REPO`: Your github repository link, if your repo is private add `https://username:{githubtoken}@github.com/{username}/{reponame}` format. Get token from [Github settings](https://github.com/settings/tokens). So you can update your bot from filled repository on each restart. `Str`.
-  - **NOTE**: Any change in docker or requirements you need to deploy/build again with updated repo to take effect. DON'T delete .gitignore file. For more information read [THIS](https://github.com/anasty17/mirror-leech-telegram-bot/tree/master#upstream-repo-recommended).
+  - **NOTE**: Any change in docker or requirements you need to deploy/build again with updated repo to take effect. DON'T delete .gitignore file. For more information read [THIS](https://github.com/arshsisodiya/helios-mirror/tree/master#upstream-repo-recommended).
 - `UPSTREAM_BRANCH`: Upstream branch for update. Default is `master`. `Str`
 
 ### Mirror
@@ -237,7 +237,7 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `ACCOUNTS_ZIP_URL`: Only if you want to load your Service Account externally from an Index Link or by any direct download link NOT webpage link. Archive the accounts folder to ZIP file. Fill this with the direct download link of zip file. `Str`. If index need authentication so add direct download as shown below:
   - `https://username:password@example.workers.dev/...`
 - `TOKEN_PICKLE_URL`: Only if you want to load your **token.pickle** externally from an Index Link. Fill this with the direct link of that file. `Str`
-- `MULTI_SEARCH_URL`: Check `drive_folder` setup [here](https://github.com/anasty17/mirror-leech-telegram-bot/tree/master#multi-search-ids). Write **drive_folder** file [here](https://gist.github.com/). Open the raw file of that gist, it's URL will be your required variable. Should be in this form after removing commit id: https://gist.githubusercontent.com/username/gist-id/raw/drive_folder. `Str`
+- `MULTI_SEARCH_URL`: Check `drive_folder` setup [here](https://github.com/arshsisodiya/helios-mirror/tree/master#multi-search-ids). Write **drive_folder** file [here](https://gist.github.com/). Open the raw file of that gist, it's URL will be your required variable. Should be in this form after removing commit id: https://gist.githubusercontent.com/username/gist-id/raw/drive_folder. `Str`
 - `YT_COOKIES_URL`: Youtube authentication cookies. Check setup [Here](https://github.com/ytdl-org/youtube-dl#how-do-i-pass-cookies-to-youtube-dl). Use gist raw link and remove commit id from the link, so you can edit it from gists only. `Str`
 - `NETRC_URL`: To create .netrc file contains authentication for aria2c and yt-dlp. Use gist raw link and remove commit id from the link, so you can edit it from gists only. **NOTE**: After editing .nterc you need to restart the docker or if deployed on heroku so restart dyno in case your edits related to aria2c authentication. `Str`
   - **NOTE**: All above url variables used incase you want edit them in future easily without deploying again or if you want to deploy from public fork. If deploying using cli or private fork you can leave these variables empty add token.pickle, accounts folder, drive_folder, .netrc and cookies.txt directly to root but you can't update them without rebuild OR simply leave all above variables and use private UPSTREAM_REPO.
@@ -326,7 +326,7 @@ sudo docker stop id
 
 ### Deploying on VPS Using docker-compose
 
-**NOTE**: If you want to use port other than 80, change it in [docker-compose.yml](https://github.com/anasty17/mirror-leech-telegram-bot/blob/master/docker-compose.yml) also.
+**NOTE**: If you want to use port other than 80, change it in [docker-compose.yml](https://github.com/arshsisodiya/helios-mirror/blob/master/docker-compose.yml) also.
 
 ```
 sudo apt install docker-compose
@@ -353,7 +353,7 @@ sudo docker-compose start
 ------
 
 ## Deploying on Heroku
-<p><a href="https://github.com/anasty17/mirror-leech-telegram-bot/tree/heroku"> <img src="https://img.shields.io/badge/Deploy%20Guide-blueviolet?style=for-the-badge&logo=heroku" width="170""/></a></p>
+<p><a href="https://github.com/arshsisodiya/helios-mirror/tree/heroku"> <img src="https://img.shields.io/badge/Deploy%20Guide-blueviolet?style=for-the-badge&logo=heroku" width="170""/></a></p>
 
 ------
 
@@ -362,33 +362,33 @@ sudo docker-compose start
 ## Bot commands to be set in [@BotFather](https://t.me/BotFather)
 
 ```
-mirror - or /m Mirror
-zipmirror - or /zm Mirror and upload as zip
-unzipmirror - or /uzm Mirror and extract files
-qbmirror - or /qm Mirror torrent using qBittorrent
-qbzipmirror - or /qzm Mirror torrent and upload as zip using qb
-qbunzipmirror - or /quzm Mirror torrent and extract files using qb
-leech - or /l Leech
-zipleech - or /zl Leech and upload as zip
-unzipleech - or /uzl Leech and extract files
-qbleech - or /ql Leech torrent using qBittorrent
-qbzipleech - or /qzl Leech torrent and upload as zip using qb
-qbunzipleech - or /quzl Leech torrent and extract using qb
+mirror -Mirror
+zipmirror - Mirror and upload as zip
+unzipmirror - Mirror and extract files
+qbmirror - Mirror torrent using qBittorrent
+qbzipmirror - Mirror torrent and upload as zip using qb
+qbunzipmirror - Mirror torrent and extract files using qb
+leech - Leech
+zipleech - Leech and upload as zip
+unzipleech - Leech and extract files
+qbleech -  Leech torrent using qBittorrent
+qbzipleech - Leech torrent and upload as zip using qb
+qbunzipleech - Leech torrent and extract using qb
 clone - Copy file/folder to Drive
 count - Count file/folder of Drive
-ytdl - or /y Mirror yt-dlp supported link
-ytdlzip - or /yz Mirror yt-dlp supported link as zip
-ytdlleech - or /yl Leech through yt-dlp supported link
-ytdlzipleech - or /yzl Leech yt-dlp support link as zip
+ytdl - Mirror yt-dlp supported link
+ytdlzip -  Mirror yt-dlp supported link as zip
+ytdlleech - Leech through yt-dlp supported link
+ytdlzipleech - Leech yt-dlp support link as zip
 leechset - Leech settings
 setthumb - Set thumbnail
 status - Get Mirror Status message
 btsel - select files from torrent
-rsslist - or /rl List all subscribed rss feed info
-rssget - or /rg Get specific No. of links from specific rss feed
-rsssub - or /rs Subscribe new rss feed
-rssunsub - or /rus Unsubscribe rss feed by title
-rssset - or /rst Rss Settings
+rsslist -  List all subscribed rss feed info
+rssget - Get specific No. of links from specific rss feed
+rsssub - Subscribe new rss feed
+rssunsub - Unsubscribe rss feed by title
+rssset -  Rss Settings
 list - Search files in Drive
 search - Search for torrents with API
 cancel - Cancel a task
@@ -562,3 +562,5 @@ machine example.workers.dev password index_password
 Where host is the name of extractor (eg. instagram, Twitch). Multiple accounts of different hosts can be added each separated by a new line.
 
 -----
+
+Base Repo Credit: [Anasty](https://github.com/anasty17/mirror-leech-telegram-bot)

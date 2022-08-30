@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "oval-compass-359215",
+  "private_key_id": "93308b979eaa29621a24e3183f6d222e9b8210d6",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCqa5utQ1OrEsmq\nFfUgk3CEXrJpvcTDZh2LdVaj30uXnz4hKxgyNnnuVTQOFp8oFMWxf6NIbAysH2Sd\ncjWFZXf48gH0e+16I1YPFFr5sXHptkiSgCMUwwPbqHEn0Uqs+WXH2Dfgh2q6OA2Q\nkhLYRhRlYS4Pf8r/M6ImZi7+/01Nsn95ggVJSKvaXdnDPI1a81q/POb5dxgIQInM\nzjBnJsu2fEjaKhl86a11eNobS/MRAD51ulIqZDdKPR5XI/1llolxh5gOhGKZLpbr\n7my8QXOgIv0uHgVqP8okW9d19LHx/4diKz3foiJOW5HaZ4SzWuR7sLRa2BSHIKLy\n4FdhPIpvAgMBAAECggEAAlCUMejHCKeogefAHMapPGsK3QEnsd2/tfwMhregOmQp\nKbXWTiGg9gSbQJERwq9xi0/Srcel7mqTaR4QLbUrSYAurZ2co/rkjto1wswkYh/I\njDuIU8kIUuH5U332F95gAbRlTJFE+QLiOvNOT+Nidd65i5qul653BogpyECQfLx+\nYP7K6+cgR/V3aiwdiSBY6L9foeNeIZgqBM3JBknpM8Ik2TauHczElV+aKLSDotFp\nTe9+pG4onrxjlOncLrOyQLciYRAbD3ga0ydGSaYPl8sOZXIIRKLedtHf0UUvgZ5X\nSI3ovp6liZgQX7qXi32PCjQT7ZPi/2vDggOj2w2PsQKBgQDvX57RW8f0SQdPo8u5\nepw3J7L1o8whMhHZuYDla1c9OsfmuNlPm+qwsA4zmIPsI5DWCilM91EVc5hKwrcg\nbN6Z7gjLx3lm6+MnrP+ZToorwfivmGFbBdQpkgxneOwOrEL1+uCLolqXAIvAWt4M\nUKvrUg6Y6U0/2AP/dgvEELYQsQKBgQC2QeiYVcmE+do+HLMzSRp++CJyMavq0RzT\nK5BBCmZ+hXqYeh+pAP/V9EmqHPlMSLr1w92LPIbGgxjrjeAcIHz+TUUPzbvQOtXr\nN55qGRz4DnwdaeaLPIzc0IX90qlqPijTGWVzog/Z130ZNvqnGDd462KDQ/cV4LF8\nMzauDXIVHwKBgQDAr/U1TC9qOnsTJaPxu3wSffd1+pNwSVDLNaNHih+gnzeZR0VO\n6xCBiEb2S5guNvb5BRb36MGxheqai6FEDb8mo9Ea0IiuS8YAAyeBLhLVZIAeQYhk\n8A04JWOsy08iBJKmVXv5iwhnMz5L6hmCSlIJzHUJrAvOD8IwGsMf4d/dEQKBgALP\nw3nOIPy3KgG5SZ5p60m4JDfkwkUuEqbDTkdilLAw+PIvOBvQUyIG0bgZGFNv78po\nyhsixOV9Ej5YAvQMIEGACaezwcj1j2VAh2YVmxfMiWeewZq2RWoGoXqH7GsiKFkR\nVDpTbrEqnNhtu7ImMnzgDLX/r2kb/UDwPVC0DmV7AoGBAMen7BRQKKIs85yKyWyJ\nwK2o3+PNaPdh/jmDdA2Zu9p/ef7yDSLusgVnHS+Z3E/a/SnbIAYYN+Sb43LjLCAa\nDifWebgEpmXUhK8KJWy3MSjpYPVBjOrwmUMlHh1emRmtsWXnprGSFwZlV28Udtqy\nfJ6nBqM1JaDOAc4+ercLAPm8\n-----END PRIVATE KEY-----\n",
+  "client_email": "mfc-ruz7o1ds9os6yzf4gfqhutfcep@oval-compass-359215.iam.gserviceaccount.com",
+  "client_id": "102341485281895143989",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/mfc-ruz7o1ds9os6yzf4gfqhutfcep%40oval-compass-359215.iam.gserviceaccount.com"
+}

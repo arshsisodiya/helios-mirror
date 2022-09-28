@@ -97,13 +97,13 @@ class TgUploader:
         else: keption = None
         # print full path file location -
         if CUSTOM_FILENAME is not None:
-            cap_mono = f"{CUSTOM_FILENAME} <b>{keption or file_}</b>"
+            cap_mono = f"<code>{CUSTOM_FILENAME} {keption or file_}</code>"
             file_ = f"{CUSTOM_FILENAME} {file_}"
             new_path = ospath.join(dirpath, file_)
             osrename(up_path, new_path)
             up_path = new_path
         else:
-            cap_mono = f"<b>{keption or file_}</b>"
+            cap_mono = f"<code>{keption or file_}</code>"
         notMedia = False
         thumb = self.__thumb
         self.__is_corrupted = False

@@ -353,6 +353,11 @@ try:
 except:
     AS_DOCUMENT = False
 try:
+    FILENAME_WITH_PATHS = getConfig('FILENAME_WITH_PATHS')
+    FILENAME_WITH_PATHS = FILENAME_WITH_PATHS.lower() == 'true'
+except:
+    FILENAME_WITH_PATHS = False
+try:
     EQUAL_SPLITS = getConfig('EQUAL_SPLITS')
     EQUAL_SPLITS = EQUAL_SPLITS.lower() == 'true'
 except:

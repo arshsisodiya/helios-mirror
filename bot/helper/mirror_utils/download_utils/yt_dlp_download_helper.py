@@ -179,7 +179,7 @@ class YoutubeDLHelper:
         if self.__is_cancelled:
             return
         if self.is_playlist:
-            self.opts['outtmpl'] = f"{path}/{self.name}/%(title)s.%(ext)s"
+            self.opts['outtmpl'] = f"{path}/{self.name}/%(playlist_index)s.%(n_entries)s %(title)s.%(ext)s"
         elif args is None:
             self.opts['outtmpl'] = f"{path}/{self.name}"
         else:

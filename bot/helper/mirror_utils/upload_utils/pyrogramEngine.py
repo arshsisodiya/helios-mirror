@@ -5,7 +5,7 @@ from pyrogram.errors import FloodWait, RPCError
 from PIL import Image
 from threading import RLock
 
-from bot import AS_DOCUMENT, AS_DOC_USERS, AS_MEDIA_USERS, CUSTOM_FILENAME, EXTENSION_FILTER, app, app_session, BOT_PM, LEECH_LOG
+from bot import AS_DOCUMENT, AS_DOC_USERS, AS_MEDIA_USERS, CUSTOM_FILENAME, EXTENSION_FILTER, app, app_session, BOT_PM, LEECH_LOG, FILENAME_WITH_PATHS
 from bot.helper.ext_utils.fs_utils import take_ss, get_media_info, get_media_streams, clean_unwanted
 from bot.helper.ext_utils.bot_utils import get_readable_file_size
 
@@ -85,14 +85,25 @@ class TgUploader:
             LEECH_DUMP = int(setstr)
             leechchat = LEECH_DUMP
         else: leechchat = self.__listener.message.chat.id
+        # print full path file location +
+        if FILENAME_WITH_PATHS:
+            keption = DOWNLOAD_DIR
+            if not keption.endswith('/'): keption = keption + '/'
+            if not keption.startswith('/'): keption = '/' + keption
+            keption = up_path.replace(keption, '', 1)
+            zoy = keption.split('/')[0]
+            keption = keption.replace(zoy, '', 1)
+            if keption.startswith('/'): keption = keption.replace('/', '', 1)
+        else: keption = None
+        # print full path file location -
         if CUSTOM_FILENAME is not None:
-            cap_mono = f"{CUSTOM_FILENAME} <b>{file_}</b>"
+            cap_mono = f"{CUSTOM_FILENAME} <b>{keption or file_}</b>"
             file_ = f"{CUSTOM_FILENAME} {file_}"
             new_path = ospath.join(dirpath, file_)
             osrename(up_path, new_path)
             up_path = new_path
         else:
-            cap_mono = f"<b>{file_}</b>"
+            cap_mono = f"<b>{keption or file_}</b>"
         notMedia = False
         thumb = self.__thumb
         self.__is_corrupted = False

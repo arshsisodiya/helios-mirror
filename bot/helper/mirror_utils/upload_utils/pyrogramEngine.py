@@ -138,7 +138,7 @@ class TgUploader:
                                                                   supports_streaming=True,
                                                                   disable_notification=True,
                                                                   progress=self.__upload_progress)
-                    if not self.isPrivate and BOT_PM:
+                    if BOT_PM:
                         try:
                             app.copy_message(chat_id=self.__user_id, from_chat_id=self.__sent_msg.chat.id, message_id=self.__sent_msg.id)
                         except Exception as err:
@@ -153,7 +153,7 @@ class TgUploader:
                                                                   thumb=thumb,
                                                                   disable_notification=True,
                                                                   progress=self.__upload_progress)
-                    if not self.isPrivate and BOT_PM:
+                    if BOT_PM:
                         try:
                             app.copy_message(chat_id=self.__user_id, from_chat_id=self.__sent_msg.chat.id, message_id=self.__sent_msg.id)
                         except Exception as err:
@@ -163,7 +163,7 @@ class TgUploader:
                                                                   caption=cap_mono,
                                                                   disable_notification=True,
                                                                   progress=self.__upload_progress)
-                    if not self.isPrivate and BOT_PM:
+                    if BOT_PM:
                         try:
                             app.copy_message(chat_id=self.__user_id, from_chat_id=self.__sent_msg.chat.id, message_id=self.__sent_msg.id)
                         except Exception as err:
@@ -182,7 +182,7 @@ class TgUploader:
                                                                  caption=cap_mono,
                                                                  disable_notification=True,
                                                                  progress=self.__upload_progress)
-                if not self.isPrivate and BOT_PM:
+                if BOT_PM:
                     try:
                         app.copy_message(chat_id=self.__user_id, from_chat_id=self.__sent_msg.chat.id, message_id=self.__sent_msg.id)
                     except Exception as err:

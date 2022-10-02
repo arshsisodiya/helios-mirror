@@ -149,7 +149,7 @@ NOTE: Try each command without any perfix to see more detalis.<br><br>
 <b>/{BotCommands.RssSettingsCommand}</b>[query]: Rss Settings (Only Owner & Sudo).<br><br>
 '''
 help_string = f'''
-Hei, Need Help!!
+Hei, Need Help!
 '''
 try:
     help = telegraph.create_page(

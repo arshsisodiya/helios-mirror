@@ -54,8 +54,8 @@ def stats(update, context):
 
 def start(update, context):
     buttons = ButtonMaker()
-    buttons.buildbutton(f"{START_BTN1_NAME}", f"{START_BTN1_URL}")
-    buttons.buildbutton(f"{START_BTN2_NAME}", f"{START_BTN2_URL}")
+    buttons.buildbutton(f"{Master}", f"{https://t.me/FSRideryt}")
+    buttons.buildbutton(f"{Support Group}", f"{https://t.me/torxbotsupp}")
     reply_markup = buttons.build_menu(2)
     if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(update):
         start_string = f'''
@@ -149,11 +149,11 @@ NOTE: Try each command without any perfix to see more detalis.<br><br>
 <b>/{BotCommands.RssSettingsCommand}</b>[query]: Rss Settings (Only Owner & Sudo).<br><br>
 '''
 help_string = f'''
-Hei, Need Help!!
+Hei,Brothers We Need Help!!
 '''
 try:
     help = telegraph.create_page(
-        title='Helios-Mirror Help',
+        title='Torkiter-Mirror Help',
         content=help_string_telegraph,
     )["path"]
 except Exception as err:
@@ -161,7 +161,7 @@ except Exception as err:
     pass
 def bot_help(update, context):
     button = ButtonMaker()
-    button.buildbutton("Click Here", f"https://graph.org/{help}")
+    button.buildbutton("Tap Here", f"https://graph.org/{help}")
     reply_markup = button.build_menu(1)
     sendMarkup(help_string, context.bot, update.message, reply_markup)
 def main():

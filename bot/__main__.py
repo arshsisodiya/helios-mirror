@@ -64,7 +64,7 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
 '''
         sendMarkup(start_string, context.bot, update.message, reply_markup)
     else:
-        sendMarkup('Not an Authorized user, deploy your own helios-mirror-leech bot', context.bot, update.message, reply_markup)
+        sendMarkup('Not an Authorized user, deploy your own torkiter-mirror-leech bot', context.bot, update.message, reply_markup)
 
 def restart(update, context):
     restart_message = sendMessage("Restarting...", context.bot, update.message)
@@ -149,11 +149,11 @@ NOTE: Try each command without any perfix to see more detalis.<br><br>
 <b>/{BotCommands.RssSettingsCommand}</b>[query]: Rss Settings (Only Owner & Sudo).<br><br>
 '''
 help_string = f'''
-Hei, Need Help!
+Hei,Brothers Need Help!
 '''
 try:
     help = telegraph.create_page(
-        title='Helios-Mirror Help',
+        title='Torkiter-Mirror Help',
         content=help_string_telegraph,
     )["path"]
 except Exception as err:

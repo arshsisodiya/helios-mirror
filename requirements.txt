@@ -4,6 +4,7 @@ aria2p
 asyncio
 attrdict
 beautifulsoup4
+bencoding
 cfscrape
 feedparser
 flask
@@ -29,3 +30,4 @@ tenacity
 tgCrypto
 urllib3
 yt-dlp
+heroku3

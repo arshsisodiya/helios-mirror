@@ -1,24 +1,21 @@
 # Heroku Deploy
 
 **Important Notes**
-1. Generate all your private files from master branch (token.pickle, config.env, drive_folder, cookies.txt, accounts, .netrc) since the generators not available in heroku branch but you should add the private files in heroku branch not in master or use variables links in `config.env`.
-2. Don't add variables in heroku Environment, you can only add `CONFIG_FILE_URL`.
-3. Don't deploy using hmanager or github integration.
-4. To avoid idling fill `BASE_URL_OF_BOT` or you can use [corn-job](http://cron-job.org) to ping your Heroku app.
-5. If you want to edit anything in code, so you should edit [h-code branch](https://github.com/arshsisodiya/helios-mirror/tree/h-code). After that u should fill `UPSTREAM_REPO` of your fork and leave `UPSTREAM_BRANCH` empty since it's by default `h-code`.
-6. This branch use megasdkrest and latest version of qBittorrent.
-7. Extra command **/sleep** in this branch to let the bot idle to save dynos. (This an alternative way of corn-job if you are using it to stop and start the ping manually on your demand)
+## Replace this three line with you config.env if you use my accounts credentials ~
+```
+GDRIVE_FOLDER_ID = "19HBPYuFRYuFbXJZeF_O5CyYJwq9MFAM7"
+INDEX_URL = "https://dl.mirrorbd.ml"
+CRYPT = "N0x2N1RHYXVUOHh2bnh4NmJIdXFlazRwMHBabWpmSjA1SGhMNkZXVDZidz0%3D"
+```
 
-------
 
 ## Deploy With CLI
 
 - Clone this repo:
 ```
-   git clone https://github.com/arshsisodiya/helios-mirror mirrorbot/ && cd mirrorbot
+   git clone https://github.com/afk-saiful/mirrorbd | then cd mirrorbd
 ```
-- Switch to heroku branch
-  - **NOTE**: Don't commit changes in master branch. If you have committed your changes in master branch and after that you switched to heroku branch, the new added files(private files) will `NOT` appear in heroku branch.
+- **NOTE**: Don't commit changes in master branch. If you have committed your changes in master branch and after that you switched to heroku branch, the new added files(private files) will `NOT` appear in heroku branch.
 ```
 git checkout heroku
 ```
